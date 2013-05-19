@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BlubluConnect</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<div class="container" style='margin: 0 auto; max-width:1000px;'>
+  <%= render "layouts/menu" %>
+  <%= yield %>
+</div>
+
+<footer class="footer">
+<div class="container" style='margin: 0 auto; max-width:1000px;'>
+Copyright @2013 <b style='margin-left: 200px;'>bolv88[at]gmail.com</b>
+</div>
+</footer>
+
+</body>
+</html>

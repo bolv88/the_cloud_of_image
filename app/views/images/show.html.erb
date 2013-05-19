@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>User:</b>
+  <%= @image.user_id %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%= @image.title %>
+</p>
+
+<p>
+  <b>File:</b>
+  <%= @image.file_id %>
+</p>
+
+<p>
+  <b>File size:</b>
+  <%= @image.file_size %>
+</p>
+
+<p>
+  <b>Width:</b>
+  <%= @image.width %>
+</p>
+
+<p>
+  <b>Height:</b>
+  <%= @image.height %>
+</p>
+
+<p>
+  <b>Format:</b>
+  <%= @image.format %>
+</p>
+
+
+<%= link_to 'Edit', edit_image_path(@image) %> |
+<%= link_to 'Back', images_path %>

@@ -81,13 +81,13 @@
       <div class="navbar-inner">
         <div class="container">
           <ul class="nav">
-            <li class='<%= "active" if @pageName=="list"%>'>
-              <a href="/home/index">首页</a>
+            <li class='<%= "active" if @pageName=="index"%>'>
+              <a href="/">首页</a>
+            </li>
+            <li class='<%= "active" if @pageName=="images"%>'>
+              <a href="/images/">图片</a>
             </li>
             <!--
-            <li class='<%= "active" if @pageName=="new"%>'>
-              <a href="/hots/new">New</a>
-            </li>
             <li class='<%= "active" if @pageName=="other" %>'>
               <a href="#">Coming</a>
             </li>

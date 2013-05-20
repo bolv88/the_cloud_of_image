@@ -1,5 +1,8 @@
 TheCloudOfImage::Application.routes.draw do
-  resources :images
+
+  get "images/display/:filename" => "images#display", :as=>'display_image'
+  resources :images do
+  end
 
 
   get "site/index"

@@ -18,7 +18,7 @@
   <tr>
     <td><%= image.user_id %></td>
     <td><%= image.title %></td>
-    <td><%= image.file_id %></td>
+    <td><%= image_tag("/images/display/"+image.file_id, :style=>'width:100px;') %></td>
     <td><%= image.file_size %></td>
     <td><%= image.width %></td>
     <td><%= image.height %></td>
@@ -32,4 +32,4 @@
 
 <br />
 
-<%= link_to 'New Image', new_image_path %>
+<%= link_to 'New Image', new_image_path, :class=>"btn btn-primary start" %>

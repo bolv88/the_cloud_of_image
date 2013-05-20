@@ -112,7 +112,7 @@
         <td>
             <span class="preview">
                 {% if (file.title) { %}
-                  <a href="{%=file.url%}" title="{%=file.name%}" data-gallery="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}">{%=file.title%}</a>
+                  <a href="{%=file.url%}" title="{%=file.name%}" data-gallery="gallery" download="{%=file.name%}"><img style='height:100px' src="/images/display/{%=file.file_id%}">{%=file.title%}</a>
                 {% } %}
             </span>
         </td>

@@ -1,8 +1,11 @@
 class ImagesController < ApplicationController
+  before_filter :authenticate_user!
+
   # GET /images
   # GET /images.json
   def index
-    @images = Image.all
+    user = current_user
+    @images = Image.where(user_id: user.id)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -43,24 +46,29 @@ class ImagesController < ApplicationController
     uploader = nil
     original_filename = nil
 
+    images = []
+    user = current_user
+
     params[:files].each{|f|
       uploader = ImageUploader.new
       uploader.store!(f)
       original_filename = f.original_filename
+        
+      magick = MiniMagick::Image.open(uploader)
+
+      image = Image.new({user_id: user.id, file_size: magick["%b"].to_i, title:original_filename, file_id:uploader.filename, width:magick[:width], height:magick[:height], format: magick["%m"]})
+
+      if image.save
+        images << image
+      else
+        images << {title: original_filename, error: "保存失败", errors: image.errors}
+      end
     }
 
-    @magick = MiniMagick::Image.open(uploader)
-
-    @image = Image.new({file_size: @magick["%b"].to_i, title:original_filename, file_id:uploader.filename, width:@magick[:width], height:@magick[:height], format: @magick["%m"]})
 
     respond_to do |format|
-      if @image.save
         format.html { redirect_to @image, notice: 'Image was successfully created.' }
-        format.json { render json: {files: [@image]}, status: :created, location: @image }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @image.errors, status: :unprocessable_entity }
-      end
+        format.json { render json: {files: images}, status: :created}
     end
   end
 
@@ -90,5 +98,10 @@ class ImagesController < ApplicationController
       format.html { redirect_to images_url }
       format.json { head :no_content }
     end
+  end
+
+  def display
+    data=File.new("/tmp/images/"+params[:filename]+"."+params[:format], "rb").read
+    send_data(data, :type=>"image/png", :disposition => "inline")  
   end
 end

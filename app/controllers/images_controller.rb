@@ -1,13 +1,13 @@
 #coding: utf-8
 class ImagesController < ApplicationController
-  before_filter :authenticate_user!, :set_page_name
+  before_filter :authenticate_user!, :set_page_name, :except => [:display, :convert]
 
   # GET /images
   # GET /images.json
   def index
     user = current_user
     @all_images = Image.where(user_id: user.id)
-    @images = @all_images.paginate(:page => params[:page], :per_page => 3)
+    @images = @all_images.paginate(:page => params[:page], :per_page => 10)
 
     respond_to do |format|
       format.html # index.html.erb

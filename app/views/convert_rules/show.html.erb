@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>User:</b>
+  <%= @convert_rule.user_id %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%= @convert_rule.title %>
+</p>
+
+<p>
+  <b>Symbol:</b>
+  <%= @convert_rule.symbol %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @convert_rule.description %>
+</p>
+
+<p>
+  <b>Status:</b>
+  <%= @convert_rule.status %>
+</p>
+
+<%= link_to 'Edit', edit_convert_rule_path(@convert_rule) %> |
+<%= link_to 'Back', convert_rules_path %>

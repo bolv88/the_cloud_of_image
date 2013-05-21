@@ -1,0 +1,31 @@
+<h1>Listing convert_rules</h1>
+
+<table class="table">
+  <tr>
+    <th>User</th>
+    <th>Title</th>
+    <th>Symbol</th>
+    <th>Description</th>
+    <th>Status</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @convert_rules.each do |convert_rule| %>
+  <tr>
+    <td><%= convert_rule.user_id %></td>
+    <td><%= convert_rule.title %></td>
+    <td><%= convert_rule.symbol %></td>
+    <td><%= convert_rule.description %></td>
+    <td><%= convert_rule.status %></td>
+    <td><%= link_to 'Show', convert_rule %></td>
+    <td><%= link_to 'Edit', edit_convert_rule_path(convert_rule) %></td>
+    <td><%= link_to 'Destroy', convert_rule, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Convert rule', new_convert_rule_path %>

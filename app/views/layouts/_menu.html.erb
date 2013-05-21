@@ -10,14 +10,17 @@
       <a class="brand" href="#">BLUBLU IMAGE</a>
       <div class="nav-collapse collapse">
           <ul class="nav">
-            <li class='<%= "active" if @pageName=="index"%>'>
+            <li class='<%= "active" if @page_name=="index"%>'>
               <a href="/">首页</a>
             </li>
-            <li class='<%= "active" if @pageName=="images"%>'>
-              <a href="/images/">图片</a>
+            <li class='<%= "active" if @page_name=="images"%>'>
+              <a href="/images/">我的图片</a>
+            </li>
+            <li class='<%= "active" if @page_name=="converts"%>'>
+              <a href="/convert_rules/">转换规则</a>
             </li>
             <!--
-            <li class='<%= "active" if @pageName=="other" %>'>
+            <li class='<%= "active" if @page_name=="other" %>'>
               <a href="#">Coming</a>
             </li>
             -->
@@ -30,11 +33,3 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="span6">
-    <h3 class="muted">BLUBLU connect</h3>
-  </div>
-  <div class="span4" style='text-align: right;'>
-    <%= render_cell :user, :menu %>
-  </div>
-</div>

@@ -1,12 +1,13 @@
 #coding: utf-8
 class ImagesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :set_page_name
 
   # GET /images
   # GET /images.json
   def index
     user = current_user
-    @images = Image.where(user_id: user.id)
+    @all_images = Image.where(user_id: user.id)
+    @images = @all_images.paginate(:page => params[:page], :per_page => 3)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -105,4 +106,39 @@ class ImagesController < ApplicationController
     data=File.new("/tmp/images/"+params[:filename]+"."+params[:format], "rb").read
     send_data(data, :type=>"image/png", :disposition => "inline")  
   end
+
+  def convert
+    file_id = params[:filename]+"."+params[:format]
+    image = Image.find_by_file_id(file_id)
+
+    if not image
+    end
+
+    convert_rule = ConvertRule.where(:user_id => image['user_id'], :symbol => params[:convert_rule]).first
+
+
+    if not convert_rule
+    end
+
+    file_path = "/tmp/images/"+file_id
+    image = MiniMagick::Image.open(file_path)
+    converts = JSON::parse(convert_rule.description)
+
+    converts.each { |convert|
+      if convert[0] == "resize"
+        image.combine_options do |c|
+          c.resize "#{convert[1]['width']}x#{convert[1]['height']}"
+          c.background "white"
+          c.gravity "center"
+          c.extent "#{convert[1]['width']}x#{convert[1]['height']}"
+        end
+      end
+    }
+    send_data(image.to_blob, :type=>"image/png", :disposition => "inline")  
+  end
+
+  private
+    def set_page_name
+      @page_name = "images"
+    end
 end

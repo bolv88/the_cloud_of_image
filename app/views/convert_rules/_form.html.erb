@@ -1,0 +1,38 @@
+<%= form_for(@convert_rule, :html=>{:class=>"form-horizontal"}) do |f| %>
+  <% if @convert_rule.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@convert_rule.errors.count, "error") %> prohibited this convert_rule from being saved:</h2>
+
+      <ul>
+      <% @convert_rule.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="control-group">
+    <%= f.label :title  , :class=>"control-label"%>
+    <div class="controls">
+    <%= f.text_field :title %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :symbol  , :class=>"control-label"%>
+    <div class="controls">
+    <%= f.text_field :symbol %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :description  , :class=>"control-label"%>
+    <div class="controls">
+      <%= f.text_area :description, :rows=>3 %>
+
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      <%= f.submit "创建", :class=>"btn"%>
+    </div>
+  </div>
+<% end %>

@@ -1,6 +1,12 @@
 TheCloudOfImage::Application.routes.draw do
 
+  resources :convert_rules
+
+
+  get "images/display/:filename.:format\!:convert_rule" => "images#convert", :as=>'convert_image'
   get "images/display/:filename" => "images#display", :as=>'display_image'
+
+
   resources :images do
   end
 

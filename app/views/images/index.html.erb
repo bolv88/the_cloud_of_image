@@ -1,6 +1,11 @@
-<h1>Listing images</h1>
+<div class="pull-left">
+  <h1>Listing images</h1>
+</div>
+<div class="pull-right">
+  <h1><%= link_to '新增图片', new_image_path, :class=>"btn btn-primary start" %></h1>
+</div>
 
-<table>
+<table class='table table-hover'>
   <tr>
     <th>User</th>
     <th>Title</th>
@@ -18,7 +23,7 @@
   <tr>
     <td><%= image.user_id %></td>
     <td><%= image.title %></td>
-    <td><%= image_tag("/images/display/"+image.file_id, :style=>'width:100px;') %></td>
+    <td><%= image_tag("/images/display/"+image.file_id+"!thumb") %></td>
     <td><%= image.file_size %></td>
     <td><%= image.width %></td>
     <td><%= image.height %></td>
@@ -32,4 +37,6 @@
 
 <br />
 
-<%= link_to 'New Image', new_image_path, :class=>"btn btn-primary start" %>
+<div class="apple_pagination">
+  <%= will_paginate @images, :previous_label => '<< 上一页', :next_label => '下一页 >>' %>
+</div>

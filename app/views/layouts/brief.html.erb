@@ -8,15 +8,12 @@
 </head>
 <body>
 
-<div class="container" style='margin: 100px auto; max-width:1000px;'>
-  <%= yield %>
+<div id="wrap">
+    <div class="container">
+      <%= yield %>
+    </div>
 </div>
-
-<footer class="footer">
-<div class="container" style='margin: 0 auto; max-width:1000px;'>
-Copyright @2013 <b style='margin-left: 200px;'>bolv88[at]gmail.com</b>
-</div>
-</footer>
+<%= render "layouts/footer" %>
 
 </body>
 </html>

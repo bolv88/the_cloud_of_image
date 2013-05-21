@@ -2,22 +2,20 @@
 <html>
 <head>
   <title>BlubluConnect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 
-<div class="container" style='margin: 0 auto; max-width:1000px;'>
-  <%= render "layouts/menu" %>
-  <%= yield %>
+<div id="wrap">
+    <%= render "layouts/menu" %>
+    <div class="container" style='margin: 0 auto;'>
+      <%= yield %>
+    </div>
 </div>
 
-<footer class="footer">
-<div class="container" style='margin: 0 auto; max-width:1000px;'>
-Copyright @2013 <b style='margin-left: 200px;'>bolv88[at]gmail.com</b>
-</div>
-</footer>
-
+<%= render "layouts/footer" %>
 </body>
 </html>

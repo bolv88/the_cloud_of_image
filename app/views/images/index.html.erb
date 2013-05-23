@@ -1,5 +1,5 @@
 <div class="pull-left">
-  <h1>Listing images</h1>
+  <h1>我的图片</h1>
 </div>
 <div class="pull-right">
   <h1><%= link_to '新增图片', new_image_path, :class=>"btn btn-primary start" %></h1>
@@ -7,30 +7,24 @@
 
 <table class='table table-hover'>
   <tr>
-    <th>User</th>
-    <th>Title</th>
-    <th>File</th>
-    <th>File size</th>
-    <th>Width</th>
-    <th>Height</th>
-    <th>Format</th>
-    <th></th>
+    <th>图片</th>
+    <th>占用空间</th>
+    <th>尺寸</th>
+    <th>格式</th>
+    <th>上传时间</th>
     <th></th>
     <th></th>
   </tr>
 
 <% @images.each do |image| %>
   <tr>
-    <td><%= image.user_id %></td>
-    <td><%= image.title %></td>
-    <td><%= image_tag("/images/display/"+image.file_id+"!thumb") %></td>
-    <td><%= image.file_size %></td>
-    <td><%= image.width %></td>
-    <td><%= image.height %></td>
+    <td><%= link_to(image_tag("/images/display/"+image.file_id+"!thumb"), image) %></td>
+    <td><%= file_size(image.file_size) %></td>
+    <td><%= image.width %> x <%= image.height %></td>
     <td><%= image.format %></td>
-    <td><%= link_to 'Show', image %></td>
-    <td><%= link_to 'Edit', edit_image_path(image) %></td>
-    <td><%= link_to 'Destroy', image, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= image.created_at %></td>
+    <td><%= link_to '查看', image %></td>
+    <td><%= link_to '删除', image, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>
 </table>

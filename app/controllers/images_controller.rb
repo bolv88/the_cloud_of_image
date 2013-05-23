@@ -6,12 +6,12 @@ class ImagesController < ApplicationController
   # GET /images.json
   def index
     user = current_user
+
     @all_images = Image.where(user_id: user.id)
     @images = @all_images.paginate(:page => params[:page], :per_page => 10)
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @images }
     end
   end
 
@@ -94,7 +94,8 @@ class ImagesController < ApplicationController
   # DELETE /images/1.json
   def destroy
     @image = Image.find(params[:id])
-    @image.destroy
+    @image.status = -1
+    @image.save
 
     respond_to do |format|
       format.html { redirect_to images_url }

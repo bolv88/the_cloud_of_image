@@ -1,40 +1,31 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>User:</b>
-  <%= @image.user_id %>
+<%= link_to '返回', images_path, :class=>"btn btn-primary" %>
 </p>
 
 <p>
-  <b>Title:</b>
-  <%= @image.title %>
+  <%= image_tag(display_image_path(@image.file_id), :class=>'img-polaroid') %>
 </p>
 
 <p>
-  <b>File:</b>
-  <%= @image.file_id %>
+  <b>文件大小:</b>
+  <%= file_size(@image.file_size) %>
 </p>
 
 <p>
-  <b>File size:</b>
-  <%= @image.file_size %>
-</p>
-
-<p>
-  <b>Width:</b>
+  <b>宽度:</b>
   <%= @image.width %>
 </p>
 
 <p>
-  <b>Height:</b>
+  <b>高度:</b>
   <%= @image.height %>
 </p>
 
 <p>
-  <b>Format:</b>
+  <b>文件格式:</b>
   <%= @image.format %>
 </p>
 
 
-<%= link_to 'Edit', edit_image_path(@image) %> |
-<%= link_to 'Back', images_path %>

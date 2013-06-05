@@ -61,3 +61,5 @@ gem 'pry-nav', :group => :development
 gem 'will_paginate', '~> 3.0'
 
 gem 'thrift'
+#tag
+gem 'acts-as-taggable-on'

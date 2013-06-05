@@ -60,6 +60,8 @@ class ImagesController < ApplicationController
 
       image = Image.new({user_id: user.id, file_size: magick["%b"].to_i, title:original_filename, file_id:uploader.filename, width:magick[:width], height:magick[:height], format: magick["%m"]})
 
+      image.folder_list = "默认"
+
       if image.save
         images << image
       else

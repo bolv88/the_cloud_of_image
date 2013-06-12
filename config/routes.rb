@@ -1,5 +1,11 @@
 TheCloudOfImage::Application.routes.draw do
 
+  post "api_user/index"
+
+  post "api/index"
+  get "api/index"
+  post "api/upload"
+
   resources :convert_rules
 
 

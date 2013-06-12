@@ -7,4 +7,8 @@ class Image < ActiveRecord::Base
 
   acts_as_taggable
   acts_as_taggable_on :folders, :tags
+
+  def origin_display_path id
+    ApplicationController.helpers.display_image_url(id)
+  end
 end

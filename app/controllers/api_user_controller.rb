@@ -3,7 +3,12 @@ require 'thrift'
 require 'photos'
 require 'user_api'
 
-class ApiUserController < ApplicationController
+class ApiUserController < BaseApiController
+  def initialize
+    super
+    self.not_authed_methods = ["_regist", "_login"]
+  end
+
   def index
     input_buffer = request.raw_post
     output_buffer = StringIO.new
@@ -48,19 +53,6 @@ class ApiUserController < ApplicationController
     end
   end
 
-  def raise_exception what,why=''
-    what = what.to_s
-    conf = {
-      "-101" => "machine id 错误",
-      "-102" => "邮箱已被注册",
-      "-103" => "注册失败",
-    }
-    rs_why = conf[what]
-    if why.length > 0
-      rs_why += "(#{why})"
-    end
-    raise Blublu::InvalidOperation.new(:what=>what.to_i, :why=>rs_why)
-  end
 
   def regist machine_id, request_time, sign, email, password
     if machine_id.length < 10

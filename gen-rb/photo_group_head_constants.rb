@@ -4,8 +4,7 @@
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 #
 
-require 'site_shared_types'
+require 'photo_group_head_types'
 
-
-module Blublu
-  end
+  module Blublu
+end

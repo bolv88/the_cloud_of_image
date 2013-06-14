@@ -1,0 +1,60 @@
+include "site_shared.idl"
+include "photo_group_head.idl"
+
+namespace rb blublu
+namespace cocoa blublu
+
+typedef i64 GROUPID
+
+service Group {
+    GROUPID create(
+        1: string token,
+        2: i64 requestTime,
+        3: string sign,
+        4: string groupName,
+    ) throws (1:site_shared.InvalidOperation ouch),
+
+    #查询我所在的圈子
+    list<photo_group_head.GroupInfo> searchMyGroup(
+        1: string token,
+        2: i64 requestTime,
+        3: string sign,
+        4: photo_group_head.GroupSearchParam searchParam, 
+    ) throws (1:site_shared.InvalidOperation ouch),
+
+    list<photo_group_head.GroupInfo> search(
+        1: string token,
+        2: i64 requestTime,
+        3: string sign,
+        4: string groupName, 
+    ) throws (1:site_shared.InvalidOperation ouch),
+
+    i32 inviteToJoin(
+        1: string token,
+        2: i64 requestTime,
+        3: string sign,
+        4: i64 usrId,
+    ) throws (1:site_shared.InvalidOperation ouch),
+
+    i32 applyToJoin(
+        1: string token,
+        2: i64 requestTime,
+        3: string sign,
+        4: i64 groupId,
+    ) throws (1:site_shared.InvalidOperation ouch),
+
+    i32 passInviteOrJoin(
+        1: string token,
+        2: i64 requestTime,
+        3: string sign,
+        4: i64 resouceId,
+    ) throws (1:site_shared.InvalidOperation ouch),
+
+    i32 refuseInviteOrJoin(
+        1: string token,
+        2: i64 requestTime,
+        3: string sign,
+        4: i64 resouceId,
+    ) throws (1:site_shared.InvalidOperation ouch),
+}
+

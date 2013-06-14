@@ -1,35 +1,17 @@
 include "site_shared.idl"
+include "photo_group_head.idl"
 namespace rb blublu
 namespace cocoa blublu
 
-struct UserInfo {
-    1: i64 userId,
-    2: string userName
-}
-
-struct PhotoObject {
-    1: i64 imageId,
-    2: string thumbnilsUrl, #缩略图
-    3: string imageUrl, #大图
-    4: string title, #标题
-    5: i64 uploadDateTime,
-    6: optional UserInfo userInfo,
-    7: optional double width,
-    8: optional double height
-}
-struct SearchParam {
-        1: optional i32 last_image_id,  # 0 开始, 不设置
-        2: optional i32 num,     # 0< pageNum <= 50
-        3: optional string order_by,  #newest, (mostloved)
-}
 
 service photos {
-    list<PhotoObject> getUserPhotos (
+    list<photo_group_head.PhotoObject> getUserPhotos (
         1: string token,    #登陆 token, token 有效期 1天
         2: i64 request_datetime,
         3: string sign,     #签名 , token , seckey
-        4: SearchParam search_param,
+        4: photo_group_head.SearchParam search_param,
     ) throws (1:site_shared.InvalidOperation ouch),
+
     string test(
         1: string a
     ),
@@ -39,5 +21,6 @@ service photos {
         2: i64 request_datetime,
         3: string sign,     #签名 , token , seckey
         4: string imageString,
-    ),
+        5: i64  groupId, #new add, 0 为无组别
+    ) throws (1:site_shared.InvalidOperation ouch),
 }

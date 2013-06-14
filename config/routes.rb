@@ -1,5 +1,6 @@
 TheCloudOfImage::Application.routes.draw do
 
+  post "group_api/index"
   post "api_user/index"
 
   post "api/index"

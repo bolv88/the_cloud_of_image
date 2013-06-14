@@ -1,6 +1,7 @@
 $:.push('./gen-rb')
 require 'thrift'
 require 'photos'
+require 'photo_group_head_types'
 require 'site_shared_types'
 require 'user'
 

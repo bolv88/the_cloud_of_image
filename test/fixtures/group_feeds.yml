@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  feed_type: MyString
+  user_id: 1
+  group_id: 1
+  status: 1
+
+two:
+  feed_type: MyString
+  user_id: 1
+  group_id: 1
+  status: 1

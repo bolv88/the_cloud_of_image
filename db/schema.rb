@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130613094226) do
+ActiveRecord::Schema.define(:version => 20130614100535) do
 
   create_table "convert_rules", :force => true do |t|
     t.integer  "user_id"
@@ -21,6 +21,15 @@ ActiveRecord::Schema.define(:version => 20130613094226) do
     t.string   "status",      :limit => 16
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
+  end
+
+  create_table "group_feeds", :force => true do |t|
+    t.string   "feed_type"
+    t.integer  "user_id"
+    t.integer  "group_id"
+    t.integer  "status"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "group_users", :force => true do |t|
@@ -50,6 +59,15 @@ ActiveRecord::Schema.define(:version => 20130613094226) do
     t.datetime "created_at",                                                             :null => false
     t.datetime "updated_at",                                                             :null => false
     t.integer  "status",                                                  :default => 1
+  end
+
+  create_table "photo_feeds", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "user_id"
+    t.integer  "photo_id"
+    t.integer  "status"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "taggings", :force => true do |t|

@@ -1,0 +1,21 @@
+include "site_shared.idl"
+namespace rb blublu
+namespace cocoa blublu
+
+service user_api {
+  string login(
+    1: string token,
+    2: i64 request_datetime,
+    3: string sign,     #签名 , token , seckey
+    4: string email,
+    5: string password,
+  ) throws (1:site_shared.InvalidOperation ouch),
+
+  string regist(
+    1: string token,
+    2: i64 request_datetime,
+    3: string sign,     #签名 , token , seckey
+    4: string email,
+    5: string password,
+  ) throws (1:site_shared.InvalidOperation ouch),
+}

@@ -17,7 +17,9 @@ class ImageUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "/tmp/images"
+    p '--------------'
+    p Rails.configuration.images_savepath
+    Rails.configuration.images_savepath
     #"uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
@@ -51,7 +53,9 @@ class ImageUploader < CarrierWave::Uploader::Base
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
     #"something.jpg" if original_filename
-    Digest::MD5.hexdigest(file.read) + "." + file.extension if original_filename
+    base_name = Digest::MD5.hexdigest(file.read) + "."
+    return base_name + file.extension if file.extension and file.extension.length > 0
+    return base_name + "jpg"
   end
 
 end

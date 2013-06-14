@@ -58,5 +58,7 @@ module TheCloudOfImage
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    config.images_savepath = File.expand_path('../../images', __FILE__)
   end
 end

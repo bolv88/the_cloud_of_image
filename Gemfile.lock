@@ -131,6 +131,7 @@ GEM
       libv8 (~> 3.11.8.12)
       ref
     thor (0.18.1)
+    thrift (0.9.0)
     tilt (1.4.1)
     treetop (1.4.12)
       polyglot
@@ -166,6 +167,7 @@ DEPENDENCIES
   rails (= 3.2.13)
   sass-rails (~> 3.2.3)
   therubyracer
+  thrift
   twitter-bootstrap-rails
   uglifier (>= 1.0.3)
   will_paginate (~> 3.0)

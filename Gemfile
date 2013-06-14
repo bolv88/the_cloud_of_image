@@ -60,5 +60,6 @@ gem 'pry-nav', :group => :development
 #分页
 gem 'will_paginate', '~> 3.0'
 
+gem 'thrift'
 #tag
 gem 'acts-as-taggable-on'

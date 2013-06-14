@@ -106,7 +106,9 @@ class ImagesController < ApplicationController
   end
 
   def display
-    data=File.new("/tmp/images/"+params[:filename]+"."+params[:format], "rb").read
+    uploader = ImageUploader.new
+    file_path = uploader.store_dir+"/"+params[:filename]+"."+params[:format]
+    data=File.new(file_path, "rb").read
     send_data(data, :type=>"image/png", :disposition => "inline")  
   end
 
@@ -117,13 +119,16 @@ class ImagesController < ApplicationController
     if not image
     end
 
-    convert_rule = ConvertRule.where(:user_id => image['user_id'], :symbol => params[:convert_rule]).first
+    convert_rule = ConvertRule.where(:symbol => params[:convert_rule]).first
 
 
     if not convert_rule
+      render_404
+      return
     end
 
-    file_path = "/tmp/images/"+file_id
+    uploader = ImageUploader.new
+    file_path = uploader.store_dir+"/"+file_id
     image = MiniMagick::Image.open(file_path)
     converts = JSON::parse(convert_rule.description)
 

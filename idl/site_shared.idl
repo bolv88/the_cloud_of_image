@@ -1,0 +1,7 @@
+namespace rb blublu
+namespace cocoa blublu
+
+exception InvalidOperation {
+  1: i32 what,
+  2: string why 
+}

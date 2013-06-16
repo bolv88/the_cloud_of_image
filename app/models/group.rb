@@ -6,4 +6,12 @@ class Group < ActiveRecord::Base
   default_scope where(:status => 1).order('id desc')
 
   has_many :group_users
+
+  def isadmin? user_id
+    if self.user_id == user_id
+      return true
+    end
+
+    return false
+  end
 end

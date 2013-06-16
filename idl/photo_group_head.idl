@@ -12,8 +12,9 @@ struct UserInfo {
 struct GroupInfo {
     1: i64 groupId,
     2: string groupName,
-    3: optional i32 unReadInfoNumber,
-    4: optional list<UserInfo> groupUsers,
+    3: i32 ifAdminer, #1: yes, 0: no
+    4: optional i32 unReadInfoNumber,
+    5: optional list<UserInfo> groupUsers,
 
     #最近10条未读信息
     #4: optional list<PhotoObject> unReadInfos,

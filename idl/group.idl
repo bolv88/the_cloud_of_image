@@ -33,7 +33,8 @@ service Group {
         1: string token,
         2: i64 requestTime,
         3: string sign,
-        4: i64 usrId,
+        4: string email,
+        5: i64 groupId,
     ) throws (1:site_shared.InvalidOperation ouch),
 
     i32 applyToJoin(

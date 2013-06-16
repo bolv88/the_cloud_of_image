@@ -90,6 +90,7 @@ class ApiController < ApplicationController
     user_id = self.getUserIdByToken params[:token]
     uploader = nil
     original_filename = nil
+    group_id = params[:group_id].to_i
 
     images = []
     user = current_user
@@ -106,11 +107,33 @@ class ApiController < ApplicationController
 
     image.folder_list = "默认"
 
-    if image.save
-      send_data "success"
-    else
+    if not image.save
       send_data "failure"
     end
+    
+    if group_id <= 0
+      group_id = nil
+    end
+
+    #加入群组中的每个人
+    user_ids = []
+    if group_id.to_i > 0
+      group_users = GroupUser.where(:group_id => group_id.to_i)
+      group_users.each {|group_user|
+        user_ids << group_user.user_id
+      }
+    else
+      user_ids << user_id
+    end
+
+    users_id.each{|feed_user_id|
+      photo_feed = PhotoFeed.new(:group_id => group_id, :user_id => feed_user_id, :photo_id=>image.id, :status=>1)
+      if not photo_feed.save
+        send_data "failure"
+      end
+    }
+
+    send_data "success"
   end
 
   def test a

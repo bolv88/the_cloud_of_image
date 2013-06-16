@@ -15,6 +15,10 @@ class BaseApiController < ApplicationController
       "-1" => "请先登陆",
       "-2" => "token错误",
 
+      "-3" => "圈子不存在",
+      "-4" => "用户不存在",
+      "-5" => "用户不为圈子管理员",
+
       "-101" => "machine id 错误",
       "-102" => "邮箱已被注册",
       "-103" => "注册失败",
@@ -60,6 +64,7 @@ class BaseApiController < ApplicationController
     if self.respond_to? new_name
         return self.send(new_name, *args, &block)
     else
+      p new_name
         return self.raise_exception -9001
     end
   end

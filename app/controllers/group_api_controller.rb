@@ -28,7 +28,7 @@ class GroupApiController < BaseApiController
   end
 
   def _create group_name
-    group = Group.new(:name => group_name, :user_id=>13, :status=>1)
+    group = Group.new(:name => group_name, :user_id=>self.api_user_id, :status=>1)
     if not group.save
         self.raise_exception -201, group.errors
     end
@@ -42,13 +42,52 @@ class GroupApiController < BaseApiController
   end
 
   def _searchMyGroup search_param
-    group_users = GroupUser.where(:user_id => self.api_user_id).includes(:group)
+    group_users = GroupUser.where(:user_id => self.api_user_id).limit(100).includes(:group)
     rs = []
     group_users.each{|group_user|
-        rs << Blublu::GroupInfo.new(:groupId => group_user.group_id, :groupName => group_user.group.name)
+      if_adminer = 0
+      if_adminer = 1 if group_user.group.user_id == self.api_user_id
+      rs << Blublu::GroupInfo.new(:groupId => group_user.group_id, :groupName => group_user.group.name, 
+                                    :ifAdminer=>if_adminer)
     }
     
     return rs
 
   end
+
+  def _inviteToJoin email,group_id
+    group = Group.where(:id => group_id.to_i).first
+
+    if not group
+      return self.raise_exception -3, group_id.to_s
+    end
+    if not (group.isadmin? self.api_user_id)
+      return self.raise_exception -5
+    end
+
+    user = User.where(:email => email).first
+
+    if not user
+      return self.raise_exception -4, email
+    end
+
+    if group.group_users.where(:user_id => user.id).length >= 1
+      return 2
+    end
+
+    group_feed = GroupFeed.new
+    group_feed.group = group
+    group_feed.user = user
+    group_feed.feed_type = "invite"
+    group_feed.status = 3
+
+    if group_feed.save
+      return 1
+    else
+      return -1
+    end
+
+    return 1
+  end
 end
+

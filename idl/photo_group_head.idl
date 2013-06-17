@@ -19,6 +19,14 @@ struct GroupInfo {
     #最近10条未读信息
     #4: optional list<PhotoObject> unReadInfos,
 }
+#group feeds
+struct GroupFeed{
+  1: i64 feedId,
+  2: GroupInfo groupInfo,
+  3: i64 timeStamp,
+  4: string feedType, #invist, apply
+  5: UserInfo createrInfo,
+}
 
 struct PhotoObject {
     1: i64 imageId,

@@ -57,5 +57,11 @@ service Group {
         3: string sign,
         4: i64 resouceId,
     ) throws (1:site_shared.InvalidOperation ouch),
+
+    list<photo_group_head.GroupFeed> myGroupFeeds(
+        1: string token,
+        2: i64 requestTime,
+        3: string sign,
+    ) throws (1:site_shared.InvalidOperation ouch),
 }
 

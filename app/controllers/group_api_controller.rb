@@ -189,5 +189,21 @@ class GroupApiController < BaseApiController
     end
   end
 
+  def _myGroupFeeds
+    group_feeds = GroupFeed.where(:user_id => self.api_user_id, :status => [2,3]).includes(:group).limit(100)
+    rs = []
+    group_feeds.each{|feed|
+      group_info = Blublu::GroupInfo.new(:groupId => feed.group.id, :groupName => feed.group.name)
+      creater_info = Blublu::UserInfo.new(:userId => feed.creater.id, :userName => feed.creater.email)
+      rs << Blublu::GroupFeed.new(
+        :feedId=>feed.id, 
+        :groupInfo => group_info, 
+        :timeStamp =>feed.created_at.tv_sec, 
+        :feedType => feed.feed_type,
+        :createrInfo => creater_info,
+      )
+    }
+    return rs
+  end
 end
 

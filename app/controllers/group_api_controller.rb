@@ -52,7 +52,9 @@ class GroupApiController < BaseApiController
     }
     
     return rs
+  end
 
+  def _search group_name
   end
 
   def _applyToJoin group_id

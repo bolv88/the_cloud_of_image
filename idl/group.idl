@@ -44,14 +44,14 @@ service Group {
         4: i64 groupId,
     ) throws (1:site_shared.InvalidOperation ouch),
 
-    i32 passInviteOrJoin(
+    i32 passInviteOrApply(
         1: string token,
         2: i64 requestTime,
         3: string sign,
         4: i64 resouceId,
     ) throws (1:site_shared.InvalidOperation ouch),
 
-    i32 refuseInviteOrJoin(
+    i32 refuseInviteOrApply(
         1: string token,
         2: i64 requestTime,
         3: string sign,

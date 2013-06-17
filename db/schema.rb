@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130614100535) do
+ActiveRecord::Schema.define(:version => 20130617081126) do
 
   create_table "convert_rules", :force => true do |t|
     t.integer  "user_id"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20130614100535) do
     t.integer  "status"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "create_id"
   end
 
   create_table "group_users", :force => true do |t|

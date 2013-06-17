@@ -55,22 +55,51 @@ class GroupApiController < BaseApiController
 
   end
 
+  def _applyToJoin group_id
+    group = Group.where(:id => group_id.to_i).first
+    if not group
+      return self.raise_exception -3, group_id.to_s
+    end
+
+    #用户是否在组中
+    if group.group_users.where(:user_id => self.api_user_id).length >= 1
+      return 2
+    end
+
+    group_feed = GroupFeed.new
+    group_feed.group = group
+    group_feed.user_id = group.user_id
+    group_feed.create_id = self.api_user_id
+    group_feed.feed_type = "apply"
+    group_feed.status = 2
+
+    if group_feed.save
+      return 1
+    else
+      return -1
+    end
+
+    return 1
+  end
+
   def _inviteToJoin email,group_id
     group = Group.where(:id => group_id.to_i).first
 
     if not group
       return self.raise_exception -3, group_id.to_s
     end
+    #是否为群管理员
     if not (group.isadmin? self.api_user_id)
       return self.raise_exception -5
     end
 
+    #用户是否存在
     user = User.where(:email => email).first
-
     if not user
       return self.raise_exception -4, email
     end
 
+    #用户是否在组中
     if group.group_users.where(:user_id => user.id).length >= 1
       return 2
     end
@@ -78,6 +107,7 @@ class GroupApiController < BaseApiController
     group_feed = GroupFeed.new
     group_feed.group = group
     group_feed.user = user
+    group_feed.create_id = self.api_user_id
     group_feed.feed_type = "invite"
     group_feed.status = 3
 
@@ -89,5 +119,73 @@ class GroupApiController < BaseApiController
 
     return 1
   end
+
+  def _passInviteOrApply resourceId
+    group_feed = GroupFeed.find_by_id(resourceId)
+    if not group_feed
+        return self.raise_exception -202, resourceId
+    end
+
+    #当前用户是否 可以处理group_feed 
+    if not (group_feed.if_can_progress? self.api_user_id)
+        return self.raise_exception -203
+    end
+
+    #是否修改状态
+    if not group_feed.if_can_change_status?
+        return self.raise_exception -204
+    end
+
+    #将该用户加入到改组中
+    user_id = 0
+    if group_feed.feed_type == "invite"
+        user_id = self.api_user_id
+    else
+        user_id = group_feed.create_id
+    end
+    group_user = GroupUser.new(:group_id => group_feed.group_id, :user_id =>user_id, :status=>1)
+
+    if group_user.save
+        group_feed.status = 1
+        group_feed.save
+        return 1
+    else
+        #是否已存在
+        if GroupUser.where(:user_id => user_id, :group_id => group_feed.group_id).length > 0
+            group_feed.status = 1
+            group_feed.save
+            return 2
+        end
+
+        return self.raise_exception -6, group_user.errors
+    end
+  end
+
+  def _refuseInviteOrApply resourceId
+    group_feed = GroupFeed.find_by_id(resourceId)
+    if not group_feed
+        return self.raise_exception -202, resourceId
+    end
+
+    #当前用户是否 可以处理 group_feed 
+    if not (group_feed.if_can_progress? self.api_user_id)
+        return self.raise_exception -203
+    end
+
+    #是否修改状态
+    if not group_feed.if_can_change_status?
+        return self.raise_exception -204
+    end
+
+    #将请求设为无效
+    group_feed.status = -2
+
+    if group_feed.save
+        return 1
+    else
+        return self.raise_exception -6, group_feed.errors
+    end
+  end
+
 end
 

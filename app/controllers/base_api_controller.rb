@@ -18,12 +18,17 @@ class BaseApiController < ApplicationController
       "-3" => "圈子不存在",
       "-4" => "用户不存在",
       "-5" => "用户不为圈子管理员",
+      "-201" => "圈子创建失败",
+      "-202" => "资源不存在",
+      "-203" => "当前用户不能处理该请求",
+      "-204" => "该请求已终结, 不能修改",
+
+      "-6" => "请求失败",
 
       "-101" => "machine id 错误",
       "-102" => "邮箱已被注册",
       "-103" => "注册失败",
 
-      "-201" => "圈子创建失败",
 
       "-9001" => "方法不存在",
       "-9002" => "参数个数太少",
@@ -45,7 +50,7 @@ class BaseApiController < ApplicationController
 
   def method_missing(name, *args, &block)
     if args.length < 3
-        return self.raise_exception -9002
+        return self.raise_exception -9002, name
     end
 
     #根据token获取user_id

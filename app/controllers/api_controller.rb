@@ -14,7 +14,7 @@ class ApiController < ApplicationController
     }
     raise Blublu::InvalidOperation.new(:what=>what.to_i, :why=>conf[what])
   end
-  #=tochange, 抛出异常
+  #获取用户id, 未登录会抛出异常
   def getUserIdByToken token
     tokens = token.split("#")
     if tokens.length < 2

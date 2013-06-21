@@ -44,7 +44,7 @@ struct SearchParam {
     1: optional i32 last_image_id,  # 0 开始, 不设置
     2: optional i32 num,     # 0< pageNum <= 50
     3: optional string order_by,  #newest, (mostloved)
-    4: optional i64 groupId, #组id
+    4: optional i64 groupId, #组id, 0 : 全部
 }
 
 

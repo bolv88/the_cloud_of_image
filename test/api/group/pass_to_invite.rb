@@ -11,7 +11,7 @@ begin
     protocol = Thrift::BinaryProtocol.new(transport) 
     client = Blublu::Group::Client.new(protocol)    
     transport.open()    
-    testRs = client.passInviteOrApply("1"*11+"#"+"1371199701.193", 123, '123', 5) 
+    testRs = client.passInviteOrApply("1"*11+"#"+"1371199701.193", 123, '123', 7) 
 #testRs = client.test("aaa")
     p testRs
 rescue

@@ -1,3 +1,4 @@
+#coding: utf-8
 $:.push('./gen-rb')
 require 'thrift'
 require 'photos'
@@ -5,7 +6,7 @@ require 'photo_group_head_types'
 require 'site_shared_types'
 require 'user'
 
-class ApiController < ApplicationController
+class ApiController < BaseApiController
   def raise_exception what,why=''
     what = what.to_s
     conf = {
@@ -92,11 +93,24 @@ class ApiController < ApplicationController
     original_filename = nil
     group_id = params[:group_id].to_i
 
+    if group_id <= 0
+      group_id = nil
+    end
+
+    if group_id >0
+      ts = GroupUser.where(:group_id => group_id, :user_id => user_id)
+      if ts.length <= 0
+        send_data "user not in group"
+        return
+      end
+    end
+
     images = []
     user = current_user
 
     f = params[:file]
 
+    #图片存储
     uploader = ImageUploader.new
     uploader.store!(f)
     original_filename = f.original_filename
@@ -109,11 +123,9 @@ class ApiController < ApplicationController
 
     if not image.save
       send_data "failure"
+      return
     end
     
-    if group_id <= 0
-      group_id = nil
-    end
 
     #加入群组中的每个人
     user_ids = []
@@ -126,10 +138,11 @@ class ApiController < ApplicationController
       user_ids << user_id
     end
 
-    users_id.each{|feed_user_id|
+    user_ids.each{|feed_user_id|
       photo_feed = PhotoFeed.new(:group_id => group_id, :user_id => feed_user_id, :photo_id=>image.id, :status=>1)
       if not photo_feed.save
         send_data "failure"
+        return
       end
     }
 
@@ -159,4 +172,47 @@ class ApiController < ApplicationController
     end
   end
 
+  def _getFeedPhotos search_param
+    
+    user_id = self.api_user_id
+    
+    feeds = PhotoFeed.includes(:image, :group).where(:user_id => user_id)
+
+    if (search_param.last_image_id) 
+      last_id = search_param.last_image_id.to_i
+      if last_id > 0
+        feeds = feeds.where("photo_id < #{last_id}")
+      end
+    end
+    number = search_param.num.to_i
+
+    if number <= 0 or number > 50
+      number = 10
+    end
+
+    feeds = feeds.limit(number)
+
+    rs = []
+
+    feeds.each do |feed|
+      image = feed.image
+      blublu_photo = Blublu::PhotoObject.new(
+        :imageId => image.id,
+        :imageUrl => display_image_url(image.file_id), 
+        :uploadDateTime => feed.created_at.tv_sec,
+        :width => image.width,
+        :height =>image.height,
+        )
+
+      if feed.group
+        blublu_photo.groupInfo = Blublu::GroupInfo.new
+        blublu_photo.groupInfo.groupId = feed.group.id
+        blublu_photo.groupInfo.groupName = feed.group.name
+      end
+
+      rs << blublu_photo
+    end
+
+    return rs
+  end
 end

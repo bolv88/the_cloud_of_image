@@ -12,6 +12,13 @@ service photos {
         4: photo_group_head.SearchParam search_param,
     ) throws (1:site_shared.InvalidOperation ouch),
 
+    list<photo_group_head.PhotoObject> getFeedPhotos (
+        1: string token,    #登陆 token, token 有效期 1天
+        2: i64 request_datetime,
+        3: string sign,     #签名 , token , seckey
+        4: photo_group_head.SearchParam search_param,
+    ) throws (1:site_shared.InvalidOperation ouch),
+
     string test(
         1: string a
     ),

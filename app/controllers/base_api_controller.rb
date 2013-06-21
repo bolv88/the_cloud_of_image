@@ -50,6 +50,7 @@ class BaseApiController < ApplicationController
 
   def method_missing(name, *args, &block)
     if args.length < 3
+        p "method not found: #{name}"
         return self.raise_exception -9002, name
     end
 

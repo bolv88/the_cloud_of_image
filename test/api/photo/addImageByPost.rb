@@ -8,7 +8,7 @@ require 'photos'
 require 'rest_client'
 
 url  = get_base_url + "/api/upload"
-token = get_token
+token = get_token 
 time = 123
 sign = "123"
 

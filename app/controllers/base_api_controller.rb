@@ -90,4 +90,12 @@ class BaseApiController < ApplicationController
     return token.user_id.to_i
   end
 
+  def getUserIdByToken! token
+    user_id = self.getUserIdByToken token
+    if not user_id
+        self.raise_exception -1
+    end
+    return user_id
+  end
+
 end

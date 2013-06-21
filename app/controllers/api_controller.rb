@@ -7,32 +7,9 @@ require 'site_shared_types'
 require 'user'
 
 class ApiController < BaseApiController
-  def raise_exception what,why=''
-    what = what.to_s
-    conf = {
-      "-1" => "请先登陆",
-      "-2" => "token错误",
-    }
-    raise Blublu::InvalidOperation.new(:what=>what.to_i, :why=>conf[what])
-  end
-  #获取用户id, 未登录会抛出异常
-  def getUserIdByToken token
-    tokens = token.split("#")
-    if tokens.length < 2
-      return self.raise_exception -2
-    end
 
-    token = UserToken.where(:machine_id=>tokens[0], :token=>tokens[1]).first
-
-    if not token
-      return self.raise_exception -1
-    end
-
-    return token.user_id.to_i
-  end
-
-  def getUserPhotos token, request_datetime, sign, search_param
-    user_id = self.getUserIdByToken token
+  def _getUserPhotos search_param
+    user_id = self.api_user_id
     
     #=todo, change user_id
     images = Image.where(:user_id => user_id)
@@ -65,6 +42,7 @@ class ApiController < BaseApiController
 
     return rs
   end
+
   def index
     input_buffer = request.raw_post
     output_buffer = StringIO.new
@@ -89,6 +67,12 @@ class ApiController < BaseApiController
     
   def upload
     user_id = self.getUserIdByToken params[:token]
+
+    if not user_id
+        send_data "need_login"
+        return
+    end
+
     uploader = nil
     original_filename = nil
     group_id = params[:group_id].to_i

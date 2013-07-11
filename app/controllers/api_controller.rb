@@ -77,16 +77,16 @@ class ApiController < BaseApiController
     original_filename = nil
     group_id = params[:group_id].to_i
 
-    if group_id <= 0
-      group_id = nil
-    end
-
     if group_id >0
       ts = GroupUser.where(:group_id => group_id, :user_id => user_id)
       if ts.length <= 0
         send_data "user not in group"
         return
       end
+    end
+
+    if group_id <= 0
+      group_id = nil
     end
 
     images = []

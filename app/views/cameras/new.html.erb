@@ -79,7 +79,9 @@
             document.getElementById("upload").addEventListener("click", function() {
                 var imgData =canvas.toDataURL("image/webp");
                 var data = imgData.substr(23);  
-                $.post('<%= cameras_path%>',{ 'image_data' : data } );
+                $.post('<%= cameras_path%>',{ 'image_data' : data }, function(data, textStatus, jqXHR){
+                  //success
+                }, "json" );
             });
 
         }, false);

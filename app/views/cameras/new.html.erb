@@ -1,0 +1,77 @@
+<h1>新增监控</h1>
+
+<!--
+<%= render 'form' %>
+-->
+
+<video id="video" style="width:320px;height:240px;" autoplay></video>
+<br/>
+<button id="snap" class="btn sexyButton">Snap Photo</button>
+<button id="upload" class="btn">upload</button>
+<br/>
+<canvas id="canvas" style='display:block' width="320" height="240"></canvas>
+<img id="img" src="" />
+    <script>
+    function hasGetUserMedia() {
+        // Note: Opera is unprefixed.
+        return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    }
+    function getMedia()
+    {
+        return navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    }
+
+    if (hasGetUserMedia()) {
+        // Good to go!
+    } else {
+        alert('getUserMedia() is not supported in your browser');
+    }
+
+    </script>
+    <script>
+        // Put event listeners into place
+        window.addEventListener("DOMContentLoaded", function() {
+            // Grab elements, create settings, etc.
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                video = document.getElementById("video"),
+                img = document.getElementById("img"),
+                videoObj = { "video": true },
+                localMediaStream = null,
+                errBack = function(error) {
+                    console.log("Video capture error: ", error.code); 
+                };
+
+            // Put video listeners into place
+            if(navigator.getUserMedia) { // Standard
+                navigator.getUserMedia(videoObj, function(stream) {
+                    video.src = stream;
+                    video.controls = true;
+
+                    localMediaStream = stream;
+                }, errBack);
+            } else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+                navigator.webkitGetUserMedia(videoObj, function(stream){
+                    video.src = window.webkitURL.createObjectURL(stream);
+                    video.controls = true;
+                    localMediaStream = stream;
+                }, errBack);
+            }
+
+            // Trigger photo take
+            document.getElementById("snap").addEventListener("click", function() {
+                context.drawImage(video, 0 , 0);
+                img.src = canvas.toDataURL('image/webp');
+            });
+
+            document.getElementById("upload").addEventListener("click", function() {
+                var imgData =canvas.toDataURL("image/webp");
+                var data = imgData.substr(23);  
+                $.post('<%= cameras_path%>',{ 'image_data' : data } );
+            });
+
+        }, false);
+    </script>
+<%= link_to 'Back', cameras_path %>

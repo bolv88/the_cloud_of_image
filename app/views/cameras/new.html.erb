@@ -41,7 +41,7 @@
                 videoObj = { "video": true },
                 localMediaStream = null,
                 errBack = function(error) {
-                    console.log("Video capture error: ", error.code); 
+                    alert("Video capture error: " + error); 
                 };
 
             // Put video listeners into place
@@ -54,15 +54,25 @@
                 }, errBack);
             } else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
                 navigator.webkitGetUserMedia(videoObj, function(stream){
+                    var vendorURL = window.URL || window.webkitURL;
                     video.src = window.webkitURL.createObjectURL(stream);
                     video.controls = true;
                     localMediaStream = stream;
                 }, errBack);
+            } else if (navigator.mozGetUserMedia ) {
+                alert("moz");
+                navigator.mozGetUserMedia(videoObj, function(stream1){
+                        alert("==");
+                    video.src = window.URL.createObjectURL(stream1);
+                    localMediaStream = stream1;
+                    video.play();
+                }, errBack);
+                alert("bbb");
             }
 
             // Trigger photo take
             document.getElementById("snap").addEventListener("click", function() {
-                context.drawImage(video, 0 , 0);
+                context.drawImage(video, 0 , 0, 320, 240);
                 img.src = canvas.toDataURL('image/webp');
             });
 

@@ -11,7 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130617081126) do
+ActiveRecord::Schema.define(:version => 20130711062523) do
+
+  create_table "cameras", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "image_url"
+    t.string   "place"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "convert_rules", :force => true do |t|
     t.integer  "user_id"

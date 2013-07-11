@@ -1,5 +1,8 @@
 TheCloudOfImage::Application.routes.draw do
 
+  resources :cameras
+
+
   post "group_api/index"
   post "api_user/index"
 

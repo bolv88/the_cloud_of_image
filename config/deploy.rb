@@ -39,3 +39,13 @@ namespace :deploy do
   end
 end
 
+after "deploy:create_symlink" do
+    run "rm -rf #{latest_release}/images"
+    run "mkdir -p #{shared_path}/images && chmod a+w #{shared_path}/images"
+    run "ln -s #{shared_path}/images #{latest_release}/images"
+
+    run "rm -rf #{latest_release}/public/uploads/tmp"
+    run "mkdir -p #{shared_path}/uploads && chmod a+w #{shared_path}/uploads/tmp"
+    run "ln -s #{shared_path}/uploads #{latest_release}/public/uploads"
+end
+

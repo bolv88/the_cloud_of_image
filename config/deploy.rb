@@ -1,3 +1,7 @@
+require "rvm/capistrano"
+require "bundler/capistrano"
+set :rvm_type, :system
+
 set :application, "the_cloud_of_images"
 set :repository,  "https://github.com/bolv88/the_cloud_of_image.git"
 
@@ -12,6 +16,7 @@ set :user, "root"
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
 
 role :web, "blublu.me"                          # Your HTTP server, Apache/etc
+
 #role :app, "Apache"                          # This may be the same as your `Web` server
 #role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
 #role :db,  "your slave db-server here"
@@ -33,3 +38,4 @@ namespace :deploy do
     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
   end
 end
+

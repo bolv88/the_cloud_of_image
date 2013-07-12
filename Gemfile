@@ -65,3 +65,5 @@ gem 'thrift'
 gem 'acts-as-taggable-on'
 
 gem 'capistrano'
+
+gem 'bundler'

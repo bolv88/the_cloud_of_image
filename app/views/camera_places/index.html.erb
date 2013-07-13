@@ -1,4 +1,9 @@
-<h3>监控场所</h3>
+<div class="pull-left">
+  <h3>我的监控</h3>
+</div>
+<div class="pull-right">
+  <h1><%= link_to '新建场所', new_camera_place_path, :class=>'btn btn-primary' %></h1>
+</div>
 
 <table class="table">
   <thead>
@@ -13,7 +18,7 @@
   <tr>
     <td><%= camera_place.place %></td>
     <td>
-      <%= link_to '开始监控', add_place_moniter_path(camera_place.id), :class => 'btn' %>
+      <%= link_to '监控', add_place_moniter_path(camera_place.id), :class => 'btn' %>
       <%= link_to '查看图片', show_by_place_path(camera_place.id), :class => 'btn' %>
     </td>
     <!--
@@ -25,7 +30,3 @@
   </tr>
 <% end %>
 </table>
-
-<br />
-
-<%= link_to '新建场所', new_camera_place_path, :class=>'btn primary_btn' %>

@@ -28,7 +28,7 @@ TheCloudOfImage::Application.routes.draw do
 
   get "site/index"
 
-  devise_for :users, :controllers => {:sessions => "users/sessions"}
+  devise_for :users, :controllers => {:sessions => "users/sessions", :registrations => "users/registrations"}
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -66,3 +66,4 @@ gem 'acts-as-taggable-on'
 
 gem 'capistrano'
 
+gem 'rvm-capistrano'

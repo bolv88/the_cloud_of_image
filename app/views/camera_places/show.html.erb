@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Place:</b>
+  <%= @camera_place.place %>
+</p>
+
+<p>
+  <b>Status:</b>
+  <%= @camera_place.status %>
+</p>
+
+
+<%= link_to 'Edit', edit_camera_place_path(@camera_place) %> |
+<%= link_to 'Back', camera_places_path %>

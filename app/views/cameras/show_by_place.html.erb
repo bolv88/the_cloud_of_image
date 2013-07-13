@@ -1,0 +1,28 @@
+<h3>监控图片</h3>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>图片</th>
+    </tr>
+  </thead>
+
+  <tr>
+    <td>
+      <% @cameras.each do |camera| %>
+        <div style='padding:1px; margin:2px; border:1px solid #eee;float:left;'>
+          <%= image_tag("/images/display/"+camera.image_url) %>
+        </div>
+        <!--
+        <td><%= link_to 'Show', camera %></td>
+        <td><%= link_to 'Edit', edit_camera_path(camera) %></td>
+        <td><%= link_to 'Destroy', camera, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        -->
+      <% end %>
+    </td>
+  </tr>
+</table>
+
+<br />
+
+<%= link_to 'New Camera', new_camera_path %>

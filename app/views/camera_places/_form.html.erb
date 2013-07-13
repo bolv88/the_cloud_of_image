@@ -1,0 +1,25 @@
+<%= form_for(@camera_place) do |f| %>
+  <% if @camera_place.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@camera_place.errors.count, "error") %> prohibited this camera_place from being saved:</h2>
+
+      <ul>
+      <% @camera_place.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :place %><br />
+    <%= f.text_field :place %>
+  </div>
+  <div class="field">
+    <%= f.label :status %><br />
+    <%= f.number_field :status %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,109 @@
+<h1>新增监控</h1>
+
+<video id="video" style="width:320px;height:240px;" autoplay></video>
+<br/>
+<button id="snap" class="btn sexyButton">开始监控</button>
+<br/>
+<canvas id="canvas" style='display:block' width="320" height="240"></canvas>
+<img id="img" src="" />
+    <script>
+    function hasGetUserMedia() {
+        // Note: Opera is unprefixed.
+        return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    }
+    function getMedia()
+    {
+        return navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    }
+
+    if (hasGetUserMedia()) {
+        // Good to go!
+    } else {
+        alert('getUserMedia() is not supported in your browser');
+    }
+
+    </script>
+    <script>
+        // Put event listeners into place
+        window.addEventListener("DOMContentLoaded", function() {
+            var post_params = {'camera_place_id': <%= @place.id%>};
+            // Grab elements, create settings, etc.
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                video = document.getElementById("video"),
+                img = document.getElementById("img"),
+                videoObj = { "video": true },
+                localMediaStream = null,
+                errBack = function(error) {
+                    alert("Video capture error: " + error); 
+                };
+
+            // Put video listeners into place
+            if(navigator.getUserMedia) { // Standard
+                navigator.getUserMedia(videoObj, function(stream) {
+                    video.src = stream;
+                    video.controls = true;
+
+                    localMediaStream = stream;
+                }, errBack);
+            } else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+                navigator.webkitGetUserMedia(videoObj, function(stream){
+                    var vendorURL = window.URL || window.webkitURL;
+                    video.src = window.webkitURL.createObjectURL(stream);
+                    video.controls = true;
+                    localMediaStream = stream;
+                }, errBack);
+            } else if (navigator.mozGetUserMedia ) {
+                alert("moz");
+                navigator.mozGetUserMedia(videoObj, function(stream1){
+                        alert("==");
+                    video.src = window.URL.createObjectURL(stream1);
+                    localMediaStream = stream1;
+                    video.play();
+                }, errBack);
+                alert("bbb");
+            }
+
+
+            var upload_camera_pic = function() {
+              context.drawImage(video, 0 , 0, 320, 240);
+              img.src = canvas.toDataURL('image/jpeg');
+
+              var post_params_this = post_params;
+              var imgData =canvas.toDataURL("image/jpeg");
+              var data = imgData.substr(23);  
+              post_params_this['image_data'] = data;
+              $.post(
+                '<%= cameras_path%>',
+                post_params_this, 
+                function(data, textStatus, jqXHR){
+                  //success
+                }, 
+                "json");
+            }
+            var upload = function(){
+              if (! window.start_monitor) {
+                return;
+              }
+              upload_camera_pic();
+              window.set_timeout = setTimeout(upload, 3000);
+            }
+
+            window.start_monitor = false;
+            // Trigger photo take
+            $("#snap").click(function(){
+              if (!window.start_monitor) {
+                $(self).val("停止监控");
+                window.start_monitor = true;
+                upload();
+              }else{
+                $(self).val("开始监控");
+                window.start_monitor = false;
+              }
+            });
+
+        }, false);
+    </script>
+<%= link_to 'Back', cameras_path %>

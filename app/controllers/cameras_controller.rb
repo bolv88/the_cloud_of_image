@@ -1,10 +1,24 @@
 require "base64"
 class CamerasController < ApplicationController
   before_filter :authenticate_user!, :set_page_name
+
+  def show_by_place
+    user = current_user
+    @place = CameraPlace.find(params[:camera_place_id])
+
+    if not @place or @place.user_id != user.id
+      return render_404
+    end
+
+    @cameras = @place.cameras
+
+  end
+
   # GET /cameras
   # GET /cameras.json
   def index
-    @cameras = Camera.all
+    user = current_user
+    @cameras = Camera.where(:user_id => user.id)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -45,7 +59,7 @@ class CamerasController < ApplicationController
     image_data =  Base64.decode64(params[:image_data])
     image_data = image_data.gsub('data:image/jpeg;base64,', '')
     file_name = Digest::MD5.hexdigest(image_data)
-    file_path = "/tmp/#{file_name}.webp"
+    file_path = "/tmp/#{file_name}.jpeg"
     f=open(file_path, "wb") 
     f.puts(image_data) 
     f.close
@@ -60,6 +74,7 @@ class CamerasController < ApplicationController
 
     user = current_user
     @camera.user_id = user.id
+    @camera.camera_place_id = params[:camera_place_id]
 
     respond_to do |format|
       if @camera.save
@@ -102,6 +117,6 @@ class CamerasController < ApplicationController
 
   private
     def set_page_name
-      @page_name = "images"
+      @page_name = "camera_places"
     end
 end

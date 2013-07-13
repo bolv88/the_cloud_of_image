@@ -1,6 +1,11 @@
 TheCloudOfImage::Application.routes.draw do
 
+  resources :camera_places
+  get "camera_places/add_place_moniter/:camera_place_id" => "camera_places#add_place_moniter", :as => 'add_place_moniter'
+
+
   resources :cameras
+  get "cameras/show_by_place/:camera_place_id" => "cameras#show_by_place", :as => "show_by_place"
 
 
   post "group_api/index"

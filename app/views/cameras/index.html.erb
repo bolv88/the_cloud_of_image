@@ -1,25 +1,26 @@
-<h1>Listing cameras</h1>
+<h3>监控图片</h3>
 
-<table>
-  <tr>
-    <th>User</th>
-    <th>Image url</th>
-    <th>Place</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<table class="table">
+  <thead>
+    <tr>
+      <th>图片</th>
+    </tr>
+  </thead>
 
-<% @cameras.each do |camera| %>
   <tr>
-    <td><%= camera.user_id %></td>
-    <td><%= camera.image_url %></td>
-    <td><%= camera.place %></td>
-    <td><%= link_to 'Show', camera %></td>
-    <td><%= link_to 'Edit', edit_camera_path(camera) %></td>
-    <td><%= link_to 'Destroy', camera, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td>
+      <% @cameras.each do |camera| %>
+        <div style='padding:1px; margin:2px; border:1px solid #eee;float:left;'>
+          <%= image_tag("/images/display/"+camera.image_url) %>
+        </div>
+        <!--
+        <td><%= link_to 'Show', camera %></td>
+        <td><%= link_to 'Edit', edit_camera_path(camera) %></td>
+        <td><%= link_to 'Destroy', camera, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        -->
+      <% end %>
+    </td>
   </tr>
-<% end %>
 </table>
 
 <br />

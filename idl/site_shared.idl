@@ -1,5 +1,6 @@
 namespace rb blublu
 namespace cocoa blublu
+namespace java me.blublu.api
 
 exception InvalidOperation {
   1: i32 what,

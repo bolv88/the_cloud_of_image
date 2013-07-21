@@ -1,6 +1,7 @@
 include "site_shared.idl"
 namespace rb blublu
 namespace cocoa blublu
+namespace java me.blublu.api
 
 service user_api {
   string login(

@@ -1,3 +1,21 @@
+<%= javascript_include_tag "jquery.pjax" %>
 <h1>云图片</h1>
 <%= link_to "监控", camera_places_path, :class=>"btn btn-primary" %>
 <%= link_to "我的图片", cameras_path, :class=>"btn btn-primary" %>
+<div id="pjax">
+<%= link_to "pjax", pjax_path, :class=>'pjax'%>
+</div>
+<div id="loading" style="display:none">loading... ... </div>
+<script>
+    $(document).ready(function(){
+        $(document).pjax('a', '#pjax');
+    });
+
+    $(document).on('pjax:send', function() {
+        $('#loading').show()
+    });
+
+    $(document).on('pjax:complete', function() {
+        $('#loading').hide()
+    });
+</script>

@@ -27,6 +27,7 @@ TheCloudOfImage::Application.routes.draw do
 
 
   get "site/index"
+  get "site/pjax", :as=>'pjax'
 
   devise_for :users, :controllers => {:sessions => "users/sessions", :registrations => "users/registrations"}
 

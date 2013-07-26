@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>We're sorry, but something went wrong (500)</title>
+  <style type="text/css">
+    body { background-color: #fff; color: #666; text-align: center; font-family: arial, sans-serif; }
+    div.dialog {
+      width: 25em;
+      padding: 0 4em;
+      margin: 4em auto 0 auto;
+      border: 1px solid #ccc;
+      border-right-color: #999;
+      border-bottom-color: #999;
+    }
+    h1 { font-size: 100%; color: #f00; line-height: 1.5em; }
+  </style>
+</head>
+
+<body>
+<script src="/assets/application.js"></script>
+<script src="/assets/test_plugin.js"></script>
+
+<p id="popo">- popo</p>
+<p id="popo1"> - popo1</p>
+<script>
+    $("#popo").test({"pp":'dd'});
+    $("#popo1").test({"pp":'dd2'});
+    $("#popo").test("alert");
+    $("#popo1").test("alert");
+</script>
+</body>
+</html>

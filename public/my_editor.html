@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+
+	<head>
+
+		<!-- MISC/META -->
+		<title> ZenPen ~ Minimal Distraction, Maximim Zen </title>
+        <meta charset="utf-8">
+		<meta name="description" content="Zenpen - A minimal web based text editor, for the modern man.">
+        
+		<!-- CSS -->
+		<link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+		<style>
+*:focus {
+	outline: none;
+}
+
+* {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+button.active{
+	border: 2px solid red;
+}
+		</style>
+		<script>
+		function init()
+		{
+			var range = document.createRange();
+			var selection = window.getSelection();
+			var headerField = document.querySelector( '.art' );
+			range.setStart(headerField, 0); //1,结尾 0, 开头
+			//range.setStartBefore(headerField);
+			selection.removeAllRanges();
+			selection.addRange(range);
+
+		}
+		function findNodeTags( element ) {
+
+			var nodeNames = {};
+
+			while ( element.parentNode ) {
+
+				nodeNames[element.nodeName] = true;
+				element = element.parentNode;
+
+				if ( element.nodeName === 'A' ) {
+					nodeNames.url = element.href;
+				}
+			}
+
+			return nodeNames;
+		}
+
+		window.onload = function(){
+			var btn;
+
+			init();	
+
+			btn = document.querySelector('#btn-bold');
+			btn.onclick = function()
+			{
+				document.execCommand( 'bold', false );
+			}
+
+			btn = document.querySelector('#btn-url');
+			btn.onclick = function()
+			{
+				
+				document.execCommand( 'unlink', false );
+				document.execCommand( 'createLink', false, "http://www.okbuy.com" );
+			}
+
+			btn = document.querySelector("#btn-test");
+			btn.onclick = function()
+			{
+				var selection = window.getSelection();
+				if (selection && !selection.isCollapsed) {
+					var nodeTags = findNodeTags(selection.focusNode);
+				}
+			}
+
+			function checkTextHighlighting()
+			{
+				var selection = window.getSelection();
+				//if (selection && !selection.isCollapsed) {
+				if (true) {
+					var nodeTags = findNodeTags(selection.focusNode);
+					var btns = ["B", "A"];
+					for (var i in btns) {
+						i = btns[i];
+						var btn = document.querySelector("."+i);
+					
+						btn.className = "btn "+i;
+					}
+					for (var k in nodeTags) {
+						try{
+							console.log("checking: "+k);
+							var btn = document.querySelector("."+k);
+							if (btn) {
+								btn.className = "btn "+k +" active";
+							}
+						}catch(e){
+							console.log(e);
+						}
+						
+					}
+				}
+			}
+			document.onmousedown = checkTextHighlighting;
+			document.onmouseup = function( event ) {
+
+				setTimeout( function() {
+					checkTextHighlighting( event );
+				}, 1);
+			};
+			document.onkeyup = checkTextHighlighting;
+		}
+		
+		</script>
+    </head>
+
+    <body>
+    	<button id='btn-bold' class='btn B'>bold</button>
+    	<button id='btn-url' class='btn A'>url</button>
+    	<button id='btn-test' class='test'>test</button>
+    	<div class='art' contenteditable=true><h2>sdfsadfsdfsf</h2>
+    		<p class='ttts'>asdfsadfsadfsdfasdfasdfsadfsdfsdf<br/>asdfsadf</p>
+    	</div>
+    </body>
+</html>

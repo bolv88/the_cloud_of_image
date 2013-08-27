@@ -4,7 +4,7 @@
 	<head>
 
 		<!-- MISC/META -->
-		<title> ZenPen ~ Minimal Distraction, Maximim Zen </title>
+		<title> My editor </title>
         <meta charset="utf-8">
 		<meta name="description" content="Zenpen - A minimal web based text editor, for the modern man.">
         
@@ -12,18 +12,55 @@
 		<link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 
 		<style>
-*:focus {
-	outline: none;
-}
-
-* {
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-
-button.active{
-	border: 2px solid red;
-}
+            body,th,tr{
+                font-family: 'Microsoft YaHei',"Helvetica Neue",Helvetica,Arial,sans-serif;
+                font-size: 22px;
+            }
+            
+            *:focus {
+            	outline: none;
+            }
+            
+            * {
+            	-moz-box-sizing: border-box;
+            	box-sizing: border-box;
+            }
+            
+            blockquote {
+                border-left: 4px solid deepskyblue;
+                margin-left: -19px;
+                padding-left: 15px;
+                margin-right: 0px;
+            }
+            #editor-bar {
+                position: absolute;
+            }
+            #editor-bar .bar-options{
+                /*margin-left: -63px;*/
+                padding: 5px;
+                background-color: rgba(0,0,0,0.9);
+                border-radius: 5px;
+                margin-top: -30px;
+                color: #fff;
+                height: 40px;
+            }
+            #editor-bar button{
+                background: none;
+                cursor: pointer;
+                color: inherit;
+                padding: 0;
+                border: 0;
+                border-radius: 3px;
+                height: 30px;
+                width: 28px;
+                font-size: 25px;
+                font-family: 'Lora', serif;
+                float: left;
+                margin-right: 1px;
+            }
+            #editor-bar button.active {
+                background-color: #999;
+            }
 		</style>
 		<script>
 		function init()
@@ -56,6 +93,7 @@ button.active{
 
 		window.onload = function(){
 			var btn;
+            var textOptions = document.querySelector('#editor-bar');
 
 			init();	
 
@@ -68,11 +106,12 @@ button.active{
 			btn = document.querySelector('#btn-url');
 			btn.onclick = function()
 			{
-				
+                //移除 url link
 				document.execCommand( 'unlink', false );
 				document.execCommand( 'createLink', false, "http://www.okbuy.com" );
 			}
 
+            /*
 			btn = document.querySelector("#btn-test");
 			btn.onclick = function()
 			{
@@ -81,14 +120,44 @@ button.active{
 					var nodeTags = findNodeTags(selection.focusNode);
 				}
 			}
+            */
 
-			function checkTextHighlighting()
+			btn = document.querySelector("#btn-block");
+			btn.onclick = function()
 			{
 				var selection = window.getSelection();
-				//if (selection && !selection.isCollapsed) {
+				var nodeTags = findNodeTags(selection.focusNode);
+                if (!!nodeTags['BLOCKQUOTE']) {
+                    document.execCommand( 'formatBlock', false, 'p' );
+                    document.execCommand( 'outdent' );
+                } else {
+                    document.execCommand( 'formatBlock', false, 'blockquote' );
+                }
+			}
+
+			btn = document.querySelector("#btn-italic");
+			btn.onclick = function()
+			{
+                document.execCommand( 'italic', false );
+			}
+
+            function updateBubblePosition() {
+                var selection = window.getSelection();
+                var range = selection.getRangeAt(0);
+                var boundary = range.getBoundingClientRect();
+
+                textOptions.style.top = boundary.top - 5 + window.pageYOffset + "px";
+                //textOptions.style.left = (boundary.left + boundary.right)/2 + "px";
+                textOptions.style.left = (boundary.left) + "px";
+            }
+
+            function checkTextHighlighting()
+            {
+                var selection = window.getSelection();
+				//if (selection && !selection.isCollapsed)
 				if (true) {
 					var nodeTags = findNodeTags(selection.focusNode);
-					var btns = ["B", "A"];
+					var btns = ["B", "A", "BLOCKQUOTE", "I"];
 					for (var i in btns) {
 						i = btns[i];
 						var btn = document.querySelector("."+i);
@@ -108,8 +177,11 @@ button.active{
 						
 					}
 				}
+
+                updateBubblePosition();
+                
 			}
-			document.onmousedown = checkTextHighlighting;
+
 			document.onmouseup = function( event ) {
 
 				setTimeout( function() {
@@ -122,10 +194,15 @@ button.active{
 		</script>
     </head>
 
-    <body>
-    	<button id='btn-bold' class='btn B'>bold</button>
-    	<button id='btn-url' class='btn A'>url</button>
-    	<button id='btn-test' class='test'>test</button>
+    <body style='margin:50px;'>
+        <div id='editor-bar'>
+            <div class="bar-options">
+    	        <button id='btn-bold' class='btn B'>b</button>
+    	        <button id='btn-italic' class='btn I' style='font-style: italic;'>i</button>
+    	        <button id='btn-block' class='btn BLOCKQUOTE' style='font-size: 49px;line-height: 60px;'>&rdquo;</button>
+    	        <button id='btn-url' class='btn A'>u</button>
+            </div>
+        </div>
     	<div class='art' contenteditable=true><h2>sdfsadfsdfsf</h2>
     		<p class='ttts'>asdfsadfsadfsdfasdfasdfsadfsdfsdf<br/>asdfsadf</p>
     	</div>

@@ -33,14 +33,33 @@
                 margin-right: 0px;
             }
             #editor-bar {
+                opacity: 0;
                 position: absolute;
+                -webkit-transition: opacity 250ms, margin 250ms;
+                -moz-transition: opacity 250ms, margin 250ms;
+                -ms-transition: opacity 250ms, margin 250ms;
+                -o-transition: opacity 250ms, margin 250ms;
+                transition: opacity 250ms, margin 250ms;
+                margin-top: -5px;
+            }
+            #editor-bar .bar-options:before{
+                content: "";
+                border-top: 5px solid rgba(0,0,0,0.9);
+                border-bottom: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-left: 5px solid transparent;
+                position: absolute;
+                margin-left: -5px;
+                bottom: -15px;
+                height: 5px;
+                width: 0px;
+                left: 50%;
             }
             #editor-bar .bar-options{
-                /*margin-left: -63px;*/
                 padding: 5px;
                 background-color: rgba(0,0,0,0.9);
                 border-radius: 5px;
-                margin-top: -30px;
+                margin-top: -40px;
                 color: #fff;
                 height: 40px;
             }
@@ -60,6 +79,46 @@
             }
             #editor-bar button.active {
                 background-color: #999;
+            }
+            #editor-bar.url_model button.B,
+            #editor-bar.url_model button.I,
+            #editor-bar.url_model button.BLOCKQUOTE{
+                width: 0;
+                overflow: hidden;
+                margin-right: 0px;
+                opacity: 0;
+                display:none;
+            }
+
+            #editor-bar input.url{
+                -webkit-transition: all 300ms ease-in-out;
+                -moz-transition: all 300ms ease-in-out;
+                -ms-transition: all 300ms ease-in-out;
+                -o-transition: all 300ms ease-in-out;
+                transition: all 300ms ease-in-out;
+                border-radius: 3px;
+                overflow: hidden;
+                outline: 0px;
+                height: 30px;
+                padding: 0px;
+                margin: 0px;
+                border: 0px;
+                float: left;
+                width: 0px;
+            }
+            #editor-bar.url_model {
+            }
+            #editor-bar.url_model input.url{
+                width: 200px;
+                padding: 0 5px;
+            }
+            #editor-bar.fade{
+                margin-top: -5px;
+                opacity: 0;
+            }
+            #editor-bar.active{
+                margin-top: 0px;
+                opacity: 1;
             }
 		</style>
 		<script>
@@ -92,8 +151,44 @@
 		}
 
 		window.onload = function(){
-			var btn;
+			var btn, lastSelection;
             var textOptions = document.querySelector('#editor-bar');
+            var urlInput = textOptions.querySelector( 'input.url' );
+
+            var hasNode = function(nodeList, name )
+            {
+                return !!nodeList[ name ];
+            }
+            var hasClass = function(node, className) {
+                var classes = node.className.split(" ");
+                for ( var i in classes) {
+                    if (classes[i] == className) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            var removeClass = function(node, className) {
+                var classes = node.className.split(" ");
+                var newClasses = [];
+                for ( var i in classes) {
+                    if (classes[i] != className) {
+                        newClasses.push(classes[i]);
+                    }
+                }
+                node.className = newClasses.join(" ");
+            }
+            var addClass = function(node, className) {
+                var classes = node.className.split(" ");
+                var newClasses = [];
+                for ( var i in classes) {
+                    if (classes[i] != className) {
+                        newClasses.push(classes[i]);
+                    }
+                }
+                newClasses.push(className);
+                node.className = newClasses.join(" ");
+            }
 
 			init();	
 
@@ -104,12 +199,69 @@
 			}
 
 			btn = document.querySelector('#btn-url');
-			btn.onclick = function()
+			btn.onmousedown = function()
 			{
+                console.log("mousedown");
+                if (hasClass(textOptions, "url_model")) {
+                    removeClass(textOptions, "url_model");
+                } else {
+                    addClass(textOptions, "url_model");
+                    console.log("add url model");
+                    var nodes = findNodeTags(window.getSelection().focusNode);
+                    if (hasNode(nodes, "A")) {
+                        urlInput.value = nodes.url;
+                    } else {
+				        document.execCommand( 'createLink', false, "/" );
+                    }
+                    //防止选中的文字消失 
+                    setTimeout(function(){
+
+                        lastSelection = window.getSelection().getRangeAt(0);
+
+                        urlInput.focus();
+                    }, 100);
+                    
+                }
                 //移除 url link
-				document.execCommand( 'unlink', false );
-				document.execCommand( 'createLink', false, "http://www.okbuy.com" );
+				//document.execCommand( 'unlink', false );
+				//document.execCommand( 'createLink', false, "http://www.okbuy.com" );
 			}
+
+            var applyURL = function(url)
+            {
+                rehighlightLastSelection();
+                document.execCommand( 'unlink', false );
+                if (url !== "") {
+
+                    // Insert HTTP if it doesn't exist.
+                    if ( !url.match("^(http|https)://") ) {
+
+                        url = "http://" + url;  
+                    } 
+
+                    document.execCommand( 'createLink', false, url );
+                }
+            }
+
+            function rehighlightLastSelection() {
+                window.getSelection().addRange( lastSelection );
+            }
+
+            urlInput.onblur = function(){
+                console.log("blur");
+                removeClass(textOptions, "url_model");
+                applyURL( urlInput.value );
+                urlInput.value = '';
+
+            };
+            urlInput.onkeydown = function(event){
+
+                if ( event.keyCode === 13 ) {
+                    event.preventDefault();
+                    applyURL( urlInput.value );
+                    urlInput.blur();
+                }
+            }
 
             /*
 			btn = document.querySelector("#btn-test");
@@ -142,20 +294,45 @@
 			}
 
             function updateBubblePosition() {
+
+                console.log("update bubble position");
                 var selection = window.getSelection();
                 var range = selection.getRangeAt(0);
                 var boundary = range.getBoundingClientRect();
 
                 textOptions.style.top = boundary.top - 5 + window.pageYOffset + "px";
-                //textOptions.style.left = (boundary.left + boundary.right)/2 + "px";
-                textOptions.style.left = (boundary.left) + "px";
+                textOptions.style.left = (boundary.left + boundary.right)/2-textOptions.offsetWidth/2 + "px";
+                //textOptions.style.left = (boundary.left) + "px";
+
+                addClass(textOptions, "active");
+            }
+            function hideBubble()
+            {
+                removeClass(textOptions, "active");
+                addClass(textOptions, "fade");
+                setTimeout(function(){
+                    if (hasClass(textOptions, "fade")) {
+                        removeClass(textOptions, "fade");
+                        textOptions.style.top = '-999px';
+                        textOptions.style.left = '-999px';
+                    }
+                }, 200);
             }
 
-            function checkTextHighlighting()
+            function checkTextHighlighting(event)
             {
                 var selection = window.getSelection();
-				//if (selection && !selection.isCollapsed)
-				if (true) {
+
+                console.log("class name : "+event.target.className);
+
+                if ( (event.target.className === "url" ||
+                     event.target.classList.contains( "A" ) ||
+                     event.target.parentNode.classList.contains( "ui-inputs")) ) {
+
+                    console.log("url , return");
+                    return;
+                }
+				if (selection && !selection.isCollapsed) {
 					var nodeTags = findNodeTags(selection.focusNode);
 					var btns = ["B", "A", "BLOCKQUOTE", "I"];
 					for (var i in btns) {
@@ -166,7 +343,7 @@
 					}
 					for (var k in nodeTags) {
 						try{
-							console.log("checking: "+k);
+							//console.log("checking: "+k);
 							var btn = document.querySelector("."+k);
 							if (btn) {
 								btn.className = "btn "+k +" active";
@@ -176,15 +353,19 @@
 						}
 						
 					}
-				}
+                    updateBubblePosition();
+				} else {
+                    hideBubble();
+                }
 
-                updateBubblePosition();
                 
 			}
 
+            document.onmousedown = checkTextHighlighting;
 			document.onmouseup = function( event ) {
 
 				setTimeout( function() {
+                    console.log("mouseup");
 					checkTextHighlighting( event );
 				}, 1);
 			};
@@ -197,10 +378,11 @@
     <body style='margin:50px;'>
         <div id='editor-bar'>
             <div class="bar-options">
+    	        <button id='btn-url' class='btn A'>u</button>
+                <input type="text" class="url" />
     	        <button id='btn-bold' class='btn B'>b</button>
     	        <button id='btn-italic' class='btn I' style='font-style: italic;'>i</button>
     	        <button id='btn-block' class='btn BLOCKQUOTE' style='font-size: 49px;line-height: 60px;'>&rdquo;</button>
-    	        <button id='btn-url' class='btn A'>u</button>
             </div>
         </div>
     	<div class='art' contenteditable=true><h2>sdfsadfsdfsf</h2>

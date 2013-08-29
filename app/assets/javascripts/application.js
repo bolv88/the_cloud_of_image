@@ -23,3 +23,4 @@
 //= require upload/jquery.fileupload-validate.js
 //= require upload/jquery.fileupload-resize.js
 //= require upload/jquery.fileupload-ui.js
+//= require editor.js

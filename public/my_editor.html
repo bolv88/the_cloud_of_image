@@ -2,7 +2,14 @@
 <html>
 
 	<head>
+<!--
+1. firefox
+    1) 工具栏弹出后, 选中部分没有高亮了
+    2) range问题.
 
+    3) 上传图片
+    4) 快捷键
+-->
 		<!-- MISC/META -->
 		<title> My editor </title>
         <meta charset="utf-8">
@@ -122,17 +129,15 @@
             }
 		</style>
 		<script>
-		function init()
-		{
-			var range = document.createRange();
-			var selection = window.getSelection();
-			var headerField = document.querySelector( '.art' );
-			range.setStart(headerField, 0); //1,结尾 0, 开头
-			//range.setStartBefore(headerField);
-			selection.removeAllRanges();
-			selection.addRange(range);
+        String.prototype.trim = function(){ return this.replace(/^\s+|\s+$/g, ''); };
+        function supportsHtmlStorage() {
+            try {
+                return 'localStorage' in window && window['localStorage'] !== null;
+            } catch (e) {
+                return false;
+            }
+        }
 
-		}
 		function findNodeTags( element ) {
 
 			var nodeNames = {};
@@ -151,7 +156,19 @@
 		}
 
     window.onload = function(){
-      var btn, lastSelection, lastType;
+	  function init()
+	  {
+	  	var range = document.createRange();
+	  	var selection = window.getSelection();
+	  	headerField = document.querySelector( '.art h2' );
+	  	contentField = document.querySelector( '.art .content' );
+	  	range.setStart(headerField, 0); //1,结尾 0, 开头
+	  	//range.setStartBefore(headerField);
+	  	selection.removeAllRanges();
+	  	selection.addRange(range);
+
+	  }
+      var btn, lastSelection, lastType, headerField, contentField;
       var textOptions = document.querySelector('#editor-bar');
       var urlInput = textOptions.querySelector( 'input.url' );
 
@@ -160,6 +177,9 @@
         return !!nodeList[ name ];
       }
       var hasClass = function(node, className) {
+        if (!node || !node.className) {
+          return false;
+        }
         var classes = node.className.split(" ");
         for ( var i in classes) {
           if (classes[i] == className) {
@@ -189,34 +209,44 @@
         newClasses.push(className);
         node.className = newClasses.join(" ");
       }
+      var focusContent = function()
+      {
+          contentField.focus();
+      };
 
       init();	
 
       btn = document.querySelector('#btn-bold');
-      btn.onclick = function()
+      btn.onclick = function(evt)
       {
         document.execCommand( 'bold', false );
       }
 
       btn = document.querySelector('#btn-url');
-      btn.onmousedown = function()
+      btn.onmousedown = function(event)
       {
         console.log("url  mousedown");
         if (hasClass(textOptions, "url_model")) {
           removeClass(textOptions, "url_model");
+          focusContent();
         } else {
-          addClass(textOptions, "url_model");
-          console.log("add url model");
           var nodes = findNodeTags(window.getSelection().focusNode);
           if (hasNode(nodes, "A")) {
             urlInput.value = nodes.url;
           } else {
             document.execCommand( 'createLink', false, "/" );
           }
+          addClass(textOptions, "url_model");
+          console.log("add url model");
           //防止选中的文字消失 
           setTimeout(function(){
 
-            lastSelection = window.getSelection().getRangeAt(0);
+            var now_select = window.getSelection().getRangeAt(0);
+            /*
+            if (now_select.startOffset!=now_select.endOffset) {
+            }
+            */
+            lastSelection = now_select;
 
             urlInput.focus();
             lastType = false;
@@ -226,11 +256,14 @@
         //移除 url link
         //document.execCommand( 'unlink', false );
         //document.execCommand( 'createLink', false, "http://www.okbuy.com" );
+
       }
 
       var applyURL = function(url)
       {
+        url = url.trim();
         rehighlightLastSelection();
+        console.log("unlink, url:"+url+","+url.length);
         document.execCommand( 'unlink', false );
         if (url !== "") {
 
@@ -238,14 +271,16 @@
           if ( !url.match("^(http|https)://") ) {
 
             url = "http://" + url;  
-          } 
+          }
 
           document.execCommand( 'createLink', false, url );
         }
       }
 
       function rehighlightLastSelection() {
-        window.getSelection().addRange( lastSelection );
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange( lastSelection );
       }
 
       urlInput.onblur = function(){
@@ -253,6 +288,7 @@
         removeClass(textOptions, "url_model");
         applyURL( urlInput.value );
         urlInput.value = '';
+        focusContent();
       };
       urlInput.onkeydown = function(event){
 
@@ -284,12 +320,14 @@
           } else {
           document.execCommand( 'formatBlock', false, 'blockquote' );
         }
+        focusContent();
       }
 
       btn = document.querySelector("#btn-italic");
       btn.onclick = function()
       {
         document.execCommand( 'italic', false );
+        focusContent();
       }
 
       function updateBubblePosition() {
@@ -328,9 +366,9 @@
         console.log("isCollapsed: " + selection.isCollapsed);
         console.log("classname: "+event.target.className);
 
-        if ( (hasClass(event.target, "url") ||
-        event.target.classList.contains( "A" ) ||
-        event.target.parentNode.classList.contains( "ui-inputs")) ) {
+        if ( event && event.target && (hasClass(event.target, "url") ||
+        hasClass(event.target, "A") ||
+        hasClass(event.target.parentNode, "ui-inputs")) ) {
 
           console.log("url , return");
           return;
@@ -370,20 +408,67 @@
 
       }
 
-      document.onmousedown = function(){
-          console.log("mousedown");
-        checkTextHighlighting(event);
-      }
-      document.onmouseup = function( event ) {
-
-        setTimeout( function() {
-          console.log("mouseup");
-          checkTextHighlighting( event );
-        }, 1);
-      };
-      document.onkeyup = function(event)
+      var saveState = function(event)
       {
+          localStorage[ 'header' ] = headerField.innerHTML;
+          localStorage[ 'content' ] = contentField.innerHTML;
+      };
+      var loadState = function() {
+
+        if ( localStorage[ 'header' ] ) {
+            headerField.innerHTML = localStorage[ 'header' ];
+        }
+
+        if ( localStorage[ 'content' ] ) {
+            contentField.innerHTML = localStorage[ 'content' ];
+        }
+      }
+      if (supportsHtmlStorage()) {
+        document.onmouseup = function( event ) {
+
+          setTimeout( function() {
+            console.log("mouseup");
+            checkTextHighlighting( event );
+            saveState();
+          }, 1);
+
+        };
+        document.onkeyup = function(event)
+        {
+          console.log("keyup");
+          checkTextHighlighting(event);
+          saveState();
+        }
+        loadState();
+      } else {
+        document.onmouseup = function( event ) {
+
+          setTimeout( function() {
+            console.log("mouseup");
+            checkTextHighlighting( event );
+          }, 1);
+        };
+        document.onkeyup = function(event)
+        {
+          console.log("keyup");
+          checkTextHighlighting(event);
+        }
+      }
+      document.onmousedown = function(event){
+        console.log("mousedown");
         checkTextHighlighting(event);
+
+        if (hasClass(event.target,"btn")) {
+          var evt = event;
+            if (evt.returnValue) {
+                evt.returnValue = false;
+            } else if (evt.preventDefault) {
+                evt.preventDefault( );
+                evt.stopPropagation();
+            } else {
+                return false;
+            }
+        }
       }
     }
 		
@@ -391,17 +476,21 @@
     </head>
 
     <body style='margin:50px;'>
-        <div id='editor-bar'>
-            <div class="bar-options">
-    	        <button id='btn-url' class='btn A'>u</button>
-                <input type="text" class="url" />
-    	        <button id='btn-bold' class='btn B'>b</button>
-    	        <button id='btn-italic' class='btn I' style='font-style: italic;'>i</button>
-    	        <button id='btn-block' class='btn BLOCKQUOTE' style='font-size: 49px;line-height: 60px;'>&rdquo;</button>
+        <div id='editor-bar' unselectable=on>
+            <div class="bar-options" unselectable=on>
+    	        <button id='btn-url' class='btn A' unselectable="on">u</button>
+                <input type="text" class="url" unselectable="on"/>
+    	        <button id='btn-bold' class='btn B'unselectable="on">b</button>
+    	        <button id='btn-italic' class='btn I' unselectable="on" style='font-style: italic;'>i</button>
+    	        <button id='btn-block' class='btn BLOCKQUOTE' unselectable="on" style='font-size: 49px;line-height: 60px;'>&rdquo;</button>
             </div>
         </div>
-    	<div class='art' contenteditable=true><h2>sdfsadfsdfsf</h2>
-    		<p class='ttts'>asdfsadfsadfsdfasdfasdfsadfsdfsdf<br/>asdfsadf</p>
+    	<div class='art' >
+            <h2 contenteditable=true>sdfsadfsdfsf</h2>
+    		<div class='content' contenteditable=true>
+                <p>asdfsadfsadfsdfasdfasdfsadfsdfsdf<br/>asdfsadf</p>
+                
+            </div>
     	</div>
     </body>
 </html>

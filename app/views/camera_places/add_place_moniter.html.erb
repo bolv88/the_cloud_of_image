@@ -25,16 +25,17 @@
                 navigator.mozGetUserMedia || navigator.msGetUserMedia;
     }
 
-    if (hasGetUserMedia()) {
-        // Good to go!
-    } else {
-        alert('getUserMedia() is not supported in your browser');
-    }
 
     </script>
     <script>
         // Put event listeners into place
         window.addEventListener("DOMContentLoaded", function() {
+            if (hasGetUserMedia()) {
+                // Good to go!
+            } else {
+                alert('您的浏览器还不支持该功能, 建议您升级至最新版 chrome 或者 firefox 浏览器');
+                return;
+            }
             var post_params = {'camera_place_id': <%= @place.id%>};
             // Grab elements, create settings, etc.
             var canvas = document.getElementById("canvas"),
@@ -44,7 +45,7 @@
                 videoObj = { "video": true },
                 localMediaStream = null,
                 errBack = function(error) {
-                    alert("Video capture error: " + error); 
+                    alert("抱歉, 发生错误 " + error); 
                 };
 
             // Put video listeners into place
@@ -65,14 +66,11 @@
                 }, errBack);
 
             } else if (navigator.mozGetUserMedia ) {
-                alert("moz");
                 navigator.mozGetUserMedia(videoObj, function(stream1){
-                        alert("==");
                     video.src = window.URL.createObjectURL(stream1);
                     localMediaStream = stream1;
                     video.play();
                 }, errBack);
-                alert("bbb");
             }
 
 
@@ -92,6 +90,7 @@
                 }, 
                 "json");
             }
+
             var upload = function(){
               if (! window.start_monitor) {
                 return;

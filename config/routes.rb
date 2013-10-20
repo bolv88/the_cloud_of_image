@@ -10,10 +10,12 @@ TheCloudOfImage::Application.routes.draw do
 
   post "group_api/index"
   post "api_user/index"
+  post "api_moniter_place/index"
 
   post "api/index"
   get "api/index"
   post "api/upload"
+  post "moniter/upload"
 
   resources :convert_rules
 

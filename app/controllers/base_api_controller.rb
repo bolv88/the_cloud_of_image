@@ -14,10 +14,13 @@ class BaseApiController < ApplicationController
     conf = {
       "-1" => "请先登陆",
       "-2" => "token错误",
+      "-6" => "签名错误",
+
 
       "-3" => "圈子不存在",
       "-4" => "用户不存在",
       "-5" => "用户不为圈子管理员",
+
       "-201" => "圈子创建失败",
       "-202" => "资源不存在",
       "-203" => "当前用户不能处理该请求",
@@ -54,12 +57,24 @@ class BaseApiController < ApplicationController
         return self.raise_exception -9002, name
     end
 
-    #根据token获取user_id
+    p args
+
+    #获取参数
     new_name = "_"+name.to_s
     token = args.shift
     request_time = args.shift
     sign = args.shift
+    
+    #验证签名
+    sec = "fffgggttt076665"
+    to_sign_string = "#{token}##{request_time}##{sec}"
+    puts to_sign_string
+    puts Digest::MD5.hexdigest(to_sign_string)
+    if sign != Digest::MD5.hexdigest(to_sign_string)
+      raise_exception -6, "#{token} #{request_time} #{sign}"
+    end
 
+    #根据token获取user_id
     self.api_user_id = self.getUserIdByToken token
 
     if (not self.api_user_id) and (not self.not_authed_methods.include? new_name)

@@ -6,3 +6,9 @@ exception InvalidOperation {
   1: i32 what,
   2: string why 
 }
+
+struct OperResult {
+  1: i32 status,
+  2: string successMsg,
+  3: string failMsg
+}

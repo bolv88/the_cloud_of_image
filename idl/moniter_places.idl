@@ -1,0 +1,53 @@
+include "site_shared.idl"
+include "photo_group_head.idl"
+namespace rb blublu
+namespace cocoa blublu
+
+namespace java me.blublu.api
+
+#photo
+struct MoniterPlaceInfo {
+  1: i64 id,
+  2: string name,
+  3: i32 photoNum
+}
+
+#moniter image
+struct MoniterImage {
+  1: i64 image_id,
+  2: i64 place_id,
+  3: string image_url,
+  4: i64 date_time
+}
+service MoniterPlaces {
+    list<MoniterPlaceInfo> getMyPlaces (
+        1: string token,    #登陆 token, token 有效期 1天
+        2: i64 request_datetime,
+        3: string sign,     #签名 , token , seckey
+        4: i32 start, #开始位置, 默认为0 , 暂时先不用
+    ) throws (1:site_shared.InvalidOperation ouch),
+
+    site_shared.OperResult addPlace(
+        1: string token,    #登陆 token, token 有效期 1天
+        2: i64 request_datetime,
+        3: string sign,     #签名 , token , seckey
+        4: string place_name, #场景名称
+    ) throws(1: site_shared.InvalidOperation ouch),
+
+    site_shared.OperResult upload(
+        1: string token,    #登陆 token, token 有效期 1天
+        2: i64 request_datetime,
+        3: string sign,     #签名 , token , seckey
+        4: i64 place_id,
+        5: i64 time,
+        6: binary bytes,
+    ) throws(1: site_shared.InvalidOperation ouch),
+
+    list<MoniterImage> getMoniterImages(
+        1: string token,    #登陆 token, token 有效期 1天
+        2: i64 request_datetime,
+        3: string sign,     #签名 , token , seckey
+        4: list<i64> place_ids,
+        5: i64 max_image_id
+    ) throws(1: site_shared.InvalidOperation ouch),
+}

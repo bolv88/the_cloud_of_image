@@ -25,4 +25,24 @@ module Blublu
     ::Thrift::Struct.generate_accessors self
   end
 
+  class OperResult
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    STATUS = 1
+    SUCCESSMSG = 2
+    FAILMSG = 3
+
+    FIELDS = {
+      STATUS => {:type => ::Thrift::Types::I32, :name => 'status'},
+      SUCCESSMSG => {:type => ::Thrift::Types::STRING, :name => 'successMsg'},
+      FAILMSG => {:type => ::Thrift::Types::STRING, :name => 'failMsg'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
 end

@@ -1,0 +1,24 @@
+include "site_shared.idl"
+namespace rb blublu
+namespace cocoa blublu
+namespace java me.blublu.api
+
+struct UpdateInfo
+{
+    1: string version,
+    2: string updateMsg,
+    3: bool forceUpdate,
+    4: optional string downloadUrl,
+}
+service System {
+
+  string getUpdate(
+    1: string token,
+    2: i64 request_datetime,
+    3: string sign,     #签名 , token , seckey
+    4: string nowVersion,
+    5: string system,
+    6: string channel, #渠道
+  ) throws (1:site_shared.InvalidOperation ouch),
+
+}

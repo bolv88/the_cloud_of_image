@@ -12,7 +12,7 @@ struct UpdateInfo
 }
 service System {
 
-  string getUpdate(
+  UpdateInfo getUpdate(
     1: string token,
     2: i64 request_datetime,
     3: string sign,     #签名 , token , seckey

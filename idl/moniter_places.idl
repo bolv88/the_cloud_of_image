@@ -34,6 +34,13 @@ service MoniterPlaces {
         4: string place_name, #场景名称
     ) throws(1: site_shared.InvalidOperation ouch),
 
+    site_shared.OperResult deletePlace(
+        1: string token,    #登陆 token, token 有效期 1天
+        2: i64 request_datetime,
+        3: string sign,     #签名 , token , seckey
+        4: i64 placeId, #场景名称
+    ) throws(1: site_shared.InvalidOperation ouch),
+
     site_shared.OperResult upload(
         1: string token,    #登陆 token, token 有效期 1天
         2: i64 request_datetime,

@@ -27,3 +27,7 @@ todo
 12. 最近删除的照片
 
 13. 文件安全
+===================
+<li class='<%= "active" if @page_name=="converts"%>'>
+  <a href="/convert_rules/">转换规则</a>
+</li>

@@ -44,6 +44,22 @@ module Blublu
         raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'addPlace failed: unknown result')
       end
 
+      def deletePlace(token, request_datetime, sign, placeId)
+        send_deletePlace(token, request_datetime, sign, placeId)
+        return recv_deletePlace()
+      end
+
+      def send_deletePlace(token, request_datetime, sign, placeId)
+        send_message('deletePlace', DeletePlace_args, :token => token, :request_datetime => request_datetime, :sign => sign, :placeId => placeId)
+      end
+
+      def recv_deletePlace()
+        result = receive_message(DeletePlace_result)
+        return result.success unless result.success.nil?
+        raise result.ouch unless result.ouch.nil?
+        raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'deletePlace failed: unknown result')
+      end
+
       def upload(token, request_datetime, sign, place_id, time, bytes)
         send_upload(token, request_datetime, sign, place_id, time, bytes)
         return recv_upload()
@@ -101,6 +117,17 @@ module Blublu
           result.ouch = ouch
         end
         write_result(result, oprot, 'addPlace', seqid)
+      end
+
+      def process_deletePlace(seqid, iprot, oprot)
+        args = read_args(iprot, DeletePlace_args)
+        result = DeletePlace_result.new()
+        begin
+          result.success = @handler.deletePlace(args.token, args.request_datetime, args.sign, args.placeId)
+        rescue ::Blublu::InvalidOperation => ouch
+          result.ouch = ouch
+        end
+        write_result(result, oprot, 'deletePlace', seqid)
       end
 
       def process_upload(seqid, iprot, oprot)
@@ -192,6 +219,46 @@ module Blublu
     end
 
     class AddPlace_result
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+      SUCCESS = 0
+      OUCH = 1
+
+      FIELDS = {
+        SUCCESS => {:type => ::Thrift::Types::STRUCT, :name => 'success', :class => ::Blublu::OperResult},
+        OUCH => {:type => ::Thrift::Types::STRUCT, :name => 'ouch', :class => ::Blublu::InvalidOperation}
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class DeletePlace_args
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+      TOKEN = 1
+      REQUEST_DATETIME = 2
+      SIGN = 3
+      PLACEID = 4
+
+      FIELDS = {
+        TOKEN => {:type => ::Thrift::Types::STRING, :name => 'token'},
+        REQUEST_DATETIME => {:type => ::Thrift::Types::I64, :name => 'request_datetime'},
+        SIGN => {:type => ::Thrift::Types::STRING, :name => 'sign'},
+        PLACEID => {:type => ::Thrift::Types::I64, :name => 'placeId'}
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class DeletePlace_result
       include ::Thrift::Struct, ::Thrift::Struct_Union
       SUCCESS = 0
       OUCH = 1

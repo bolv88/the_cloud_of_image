@@ -54,8 +54,33 @@ class ApiMoniterPlaceController < BaseApiController
     if moniter_place.save
       rs.status = 1
     else
-      rs.status = -1
+      rs.status = -6
       rs.failMsg = moniter_place.errors
+    end
+
+    return rs
+  end
+
+  def _deletePlace place_id
+    rs = Blublu::OperResult.new
+    #检查是否place_id 是该用户的
+    user = User.find(self.api_user_id)
+    moniter_place = user.CameraPlaces.find(place_id)
+
+    puts '-'*30,moniter_place
+    if !moniter_place
+      return self.raise_exception  -301
+    end
+    
+    #修改状态
+    moniter_place.status = 2
+
+    if moniter_place.save
+      rs.status = 1
+    else
+      rs.status = -6
+      rs.failMsg = JSON::dump moniter_place.errors
+      puts '*'*30, JSON::dump(moniter_place.errors)
     end
 
     return rs

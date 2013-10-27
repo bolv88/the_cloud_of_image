@@ -28,16 +28,16 @@ class ApiSystemController < BaseApiController
 
 
 
-  def regist machine_id, request_time, sign, now_version, system, channel
+  def getUpdate machine_id, request_time, sign, now_version, system, channel
     if machine_id.length < 10
       self.raise_exception -101
     end
     
-    update_info = Blublu::System::UpdateInfo.new()
+    update_info = Blublu::UpdateInfo.new()
     update_info.version = "1.0.0"
-    update_info.updateMsg = "光荣上架"
+    update_info.updateMsg = ""
     update_info.forceUpdate = false
-    update_info.downloadUrl = ""
+    update_info.downloadUrl = "http://106.187.49.213:8011/CameraMoniter-1.0.0.apk"
 
     return update_info
   end

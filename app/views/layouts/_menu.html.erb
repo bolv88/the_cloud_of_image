@@ -13,14 +13,11 @@
             <li class='<%= "active" if @page_name=="index"%>'>
               <a href="/">首页</a>
             </li>
+            <li class='<%= "active" if @page_name=="camera_places"%>'>
+              <a href="<%= camera_places_path%>">监控</a>
+            </li>
             <li class='<%= "active" if @page_name=="images"%>'>
               <a href="/images/">我的图片</a>
-            </li>
-            <li class='<%= "active" if @page_name=="converts"%>'>
-              <a href="/convert_rules/">转换规则</a>
-            </li>
-            <li class='<%= "active" if @page_name=="camera_places"%>'>
-            <a href="<%= camera_places_path%>">监控</a>
             </li>
             <!--
             <li class='<%= "active" if @page_name=="other" %>'>

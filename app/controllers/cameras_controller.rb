@@ -10,7 +10,7 @@ class CamerasController < ApplicationController
       return render_404
     end
 
-    @cameras = @place.cameras
+    @cameras = @place.cameras.paginate(:page => params[:page], :per_page => 10)
 
   end
 

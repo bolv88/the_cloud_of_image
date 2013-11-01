@@ -26,3 +26,7 @@
 <br />
 
 <%= link_to 'New Camera', new_camera_path %>
+
+<div class="apple_pagination">
+  <%= will_paginate @cameras, :previous_label => '<< 上一页', :next_label => '下一页 >>' %>
+</div>

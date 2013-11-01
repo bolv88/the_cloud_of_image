@@ -4,7 +4,7 @@ class SiteController < ApplicationController
     p params
     p session[:session_id]
 
-    @title = "静态监控"
+    @title = "静态监控, 偷拍神器"
   end
   def pjax
 
